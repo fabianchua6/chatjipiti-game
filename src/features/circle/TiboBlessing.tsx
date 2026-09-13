@@ -1,5 +1,3 @@
-import { useGameClock } from '../../lib/useGameClock';
-import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import './tibo-blessing.css';
 
@@ -20,16 +18,7 @@ function TokenMark() {
 }
 
 export default function TiboBlessing({ paused = false }: { paused?: boolean }) {
-  const clock = useGameClock(paused);
-  const [until] = useState(() => clock.now() + (matchMedia('(prefers-reduced-motion: reduce)').matches ? 1500 : 4400));
-  const [visible, setVisible] = useState(true);
-  useEffect(() => {
-    if (paused || !visible) return;
-    const timer = setInterval(() => { if (clock.now() >= until) setVisible(false); }, 50);
-    return () => clearInterval(timer);
-  }, [clock, paused, until, visible]);
-  if (!visible) return null;
-  return <div className="tibo-blessing" aria-hidden="true">
+  return <div className="tibo-blessing" data-paused={paused || undefined} aria-hidden="true">
     <div className="blessing-light"/>
     <div className="blessing-arrival"><div className="blessing-pope"/></div>
     <div className="blessing-token-rain">{tokens.map(token => <span key={token.id} className="blessing-token" style={{
