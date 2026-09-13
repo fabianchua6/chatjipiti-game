@@ -3,7 +3,7 @@ import { getMatchPhrase } from '../../lib/matchPhrases';
 
 export default function MatchCelebration({ sequence, combo }: { sequence: number; combo: number }) {
   const phrase = getMatchPhrase(combo);
-  return <div key={sequence} className="match-celebration" aria-hidden="true">
+  return <div key={sequence} className="match-celebration" style={{ '--match-lines': phrase.headline.length } as CSSProperties} aria-hidden="true">
     <div className="match-nebula"/>
     <div className="match-orbit orbit-one"/><div className="match-orbit orbit-two"/>
     <div className="match-particles">{Array.from({ length: 28 }, (_, index) => {

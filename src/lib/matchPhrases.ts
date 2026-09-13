@@ -5,6 +5,7 @@ export type MatchPhrase = {
 };
 
 const amplifiers = [
+  'COSMICALLY',
   'ASTRONOMICALLY',
   'INFINITELY',
   'INTERGALACTICALLY',
@@ -14,12 +15,19 @@ const amplifiers = [
   'UNFATHOMABLY',
   'ETERNALLY',
   'INCONCEIVABLY',
+  'SPECTACULARLY',
+  'PHENOMENALLY',
+  'STUPENDOUSLY',
+  'OUTRAGEOUSLY',
+  'GLORIOUSLY',
+  'DIVINELY',
+  'ULTIMATELY',
 ] as const;
 
 export function getMatchPhrase(combo: number): MatchPhrase {
   const safeCombo = Number.isFinite(combo) ? Math.max(1, Math.floor(combo)) : 1;
-  // Every two consecutive pairs adds a word, keeping all earlier words.
-  const earned = amplifiers.slice(0, Math.floor(safeCombo / 2));
+  // Each consecutive pair after the first adds a word, keeping all earlier words.
+  const earned = amplifiers.slice(0, safeCombo - 1);
   const headline = ['ABSOLUTELY', ...earned, 'RIGHT'];
   return {
     eyebrow: 'YOU’RE',

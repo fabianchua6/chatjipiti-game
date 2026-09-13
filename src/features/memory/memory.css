@@ -5,3 +5,7 @@
 .match-proclamation.is-long-stack strong{line-height:1.12}
 .match-proclamation.is-long-stack>span{margin-bottom:8px}
 .match-proclamation.is-long-stack small{margin-top:8px}
+
+/* Keep every earned word inside both the full board and the inline mini game. */
+.memory-arena{container-type:inline-size}
+.memory-arena .match-proclamation.is-long-stack strong{font-size:min(clamp(17px,6cqi,31px),calc((100cqi - 72px) / (var(--match-lines) * 1.12)))}

@@ -76,7 +76,7 @@ export default function ArtworkSettings({ kind, disabled = false }: { kind: ArtK
       <legend className="sr-only">{kind === 'environment' ? 'Environment settings' : 'Card artwork settings'}</legend>
       <div className={`art-gallery ${kind === 'cards' ? 'card-gallery' : ''}`}>
         {library.assets.map(asset => <button key={asset.id} className={`art-choice ${library.selected.id === asset.id ? 'is-selected' : ''}`} aria-pressed={library.selected.id === asset.id} onClick={() => library.select(asset)}>
-          {asset.kind === 'environment' ? <img src={asset.url} alt={`${asset.name} circle game environment`} loading="lazy"/> : <span className="pack-preview" aria-hidden="true">{[0,1,2,3,4,5].map(index => <CardFace key={index} pack={asset} face={index} paused/>)}</span>}
+          {asset.kind === 'environment' ? <img src={asset.url} alt={`${asset.name} circle game environment`} loading="lazy"/> : <span className="pack-preview" aria-hidden="true">{[0,1,2].map(index => <CardFace key={index} pack={asset} face={index} paused/>)}</span>}
           <span className="art-choice-caption"><span><b>{asset.name}</b>{asset.id === 'zootopia' && <small>Original cast · Zootopia-inspired</small>}</span>{library.selected.id === asset.id && <Icon name="check"/>}</span>
         </button>)}
       </div>

@@ -11,5 +11,5 @@
 @media (max-width: 600px) { .pack-preview .pet-card-face, .pack-preview .card-atlas-icon { width: 32px; } }
 .art-choice-caption > span { min-width: 0; }
 .art-choice-caption small { display: block; font-size: 9px; color: #b4b4b4; line-height: 1.5; margin-top: 3px; }
-.card-gallery .pack-preview { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.card-gallery .pack-preview { grid-template-columns: repeat(3, minmax(0, 1fr)); aspect-ratio: auto; }
 .pack-preview .pet-card-face, .pack-preview .card-atlas-icon { min-width: 0; }
