@@ -5,21 +5,22 @@ export type MatchPhrase = {
 };
 
 const amplifiers = [
-  '',
   'ASTRONOMICALLY',
+  'INFINITELY',
   'INTERGALACTICALLY',
   'MULTIVERSALLY',
   'OMNIVERSALLY',
   'TRANSCENDENTALLY',
   'UNFATHOMABLY',
-  'INFINITELY',
+  'ETERNALLY',
+  'INCONCEIVABLY',
 ] as const;
 
 export function getMatchPhrase(combo: number): MatchPhrase {
   const safeCombo = Number.isFinite(combo) ? Math.max(1, Math.floor(combo)) : 1;
-  // Hold the biggest superlative on long streaks instead of cycling back down.
-  const amplifier = amplifiers[Math.min(safeCombo - 1, amplifiers.length - 1)];
-  const headline = ['ABSOLUTELY', ...(amplifier ? [amplifier] : []), 'RIGHT'];
+  // Every two consecutive pairs adds a word, keeping all earlier words.
+  const earned = amplifiers.slice(0, Math.floor(safeCombo / 2));
+  const headline = ['ABSOLUTELY', ...earned, 'RIGHT'];
   return {
     eyebrow: 'YOU’RE',
     headline,

@@ -38,15 +38,15 @@ Static production output is `dist/`. Fonts and game artwork are bundled locally.
 ## Demo flow
 
 1. Open New chat, enter a prompt or use a suggestion.
-2. Sending the prompt starts the mock task and shows unplayed games directly in the chat.
-3. Click a game to launch its daily challenge immediately. There is no picker popup or extra confirmation.
-4. Games you have tried today appear as compact replay links; Daily and Free Play both count. The mock keeps running while you play.
+2. Sending the prompt starts the mock task and shows the ghost button **Fancy a game while you wait?** in the chat.
+3. Expand the invitation, then click a game to launch its daily challenge. Click the invitation again to collapse the choices.
+4. Games appear together as rounded icon cards, with unplayed games first and only the icon and game title visible; Daily and Free Play both count. The mock keeps running while you play.
 5. After 30 seconds the agent announces completion, keeping the game in place.
 6. Score 95+ on the daily circle to see Pope Tibo and bank one simulated reset.
 
 ## Games
 
-- **You’re Absolutely Right!** — 3×3 to 6×6 memory boards; fixed Astra poster backs and 24 authored SVG geometric faces; one unmatchable blank on odd boards; smooth flips, cosmic matched-pair celebrations that grow from “YOU’RE ABSOLUTELY RIGHT” to “YOU’RE ABSOLUTELY ASTRONOMICALLY RIGHT” and beyond on a streak, time and moves. Appearance choices and optional generation live in a small collapsible settings panel inside the game.
+- **You’re Absolutely Right!** — 3×3 to 6×6 memory boards; fixed Astra poster backs and 24 authored SVG geometric faces; one unmatchable blank on odd boards; smooth flips, cosmic matched-pair celebrations that grow from “YOU’RE ABSOLUTELY RIGHT” to “YOU’RE ABSOLUTELY ASTRONOMICALLY RIGHT” and “YOU’RE ABSOLUTELY ASTRONOMICALLY INFINITELY RIGHT” at four consecutive pairs; another word is added every two pairs, time and moves. Appearance choices and optional generation live in a small collapsible settings panel inside the game.
 - **Make No Mistakes** — inline pixel-text input; one wrong character ends the run; Daily 60s / Free Play 300s; seeded progressive phrases; local character/WPM records; IME-aware committed input; paste blocked.
 - **Draw Me a Yellow Circle** — three-second target reveal, press-centre/drag-radius/release submission, position and size scoring; mouse, touch and keyboard; retro wood-room stage, generated Pope Tibo parody and daily reward wallet. Classic, Forest and Moon environments are selectable from the in-game settings panel.
 
