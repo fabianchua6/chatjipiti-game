@@ -19,7 +19,7 @@ const teammates = [
 
 function OfficePreview() {
   return <div className="hearth-preview">
-    <div className="hearth-preview-copy"><span>Studio preview</span><h2>A place to build together.</h2><p>Bring your team into a shared office. Give your agents a mission and make your next game or mini app.</p></div>
+    <div className="hearth-preview-copy"><span>Studio preview</span><h2>A place to build together.</h2><p>Bring your team into a shared office. Give your agents a task and make your next game or mini app.</p></div>
     <svg className="hearth-office" viewBox="0 0 690 355" role="img" aria-label="An engineering office with six agent desks and a shared meeting table">
       <defs><pattern id="hearth-floor" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#3d3d38" strokeWidth=".7"/></pattern></defs>
       <rect x="5" y="5" width="680" height="345" rx="14" fill="#2d302d" stroke="#50564b"/>
