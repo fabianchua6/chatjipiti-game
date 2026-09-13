@@ -7,23 +7,26 @@ import type { GameMode } from './lib/challenges';
 import { useAgentTask } from './features/chat/useAgentTask';
 import './shell.css';
 import ChatGames from './features/chat/ChatGames';
+import HearthStudio, { HearthMark } from './features/hearth/HearthStudio';
 
 type Page = string;
 
+const starterPrompt = "Build me the next OpenAI. Spin up 10 developers. Make zero mistakes. Check everything twice. Minimise costs and tokens. Budget: $3. Ship before my coffee gets cold.";
 const suggestions = ['Build me a personal website', 'Plan a weekend in Tokyo', 'Explain why my code works'];
-const validPages: Page[] = ['chat', 'games', 'profile', ...games.map(game => game.id)];
+const validPages: Page[] = ['chat', 'games', 'profile', 'hearth', ...games.map(game => game.id)];
 function currentPage(): Page { const hash = location.hash.slice(1) as Page; return hash === ('studio' as string) ? 'circle' : validPages.includes(hash) ? hash : 'chat'; }
 function readName() { try { return localStorage.getItem('chatjipiti:v1:nickname')?.slice(0, 24) || 'Player One'; } catch { return 'Player One'; } }
 function readMuted() { try { return localStorage.getItem('chatjipiti:muted') !== 'false'; } catch { return true; } }
 
 export default function App() {
   const [page, setPage] = useState<Page>(currentPage);
+  const [hearthOpened, setHearthOpened] = useState(() => currentPage() === 'hearth');
   const [name, setName] = useState(readName);
   const [nickname, setNickname] = useState(name);
   const [mode, setMode] = useState<GameMode>('daily');
   const [muted, setMuted] = useState(readMuted);
   const [balance, setBalance] = useState(resetBalance);
-  const [composer, setComposer] = useState('');
+  const [composer, setComposer] = useState(starterPrompt);
   const { run, elapsed, start: startAgent, stop: stopAgent, clear: clearAgent } = useAgentTask();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [drawer, setDrawer] = useState(false);
@@ -36,7 +39,7 @@ export default function App() {
   const activeGame = games.find(game => game.id === page);
 
   useEffect(() => {
-    const onHash = () => { const next = currentPage(); setPage(next); setDrawer(false); };
+    const onHash = () => { const next = currentPage(); setPage(next); if (next === 'hearth') setHearthOpened(true); setDrawer(false); };
     const onWallet = () => setBalance(resetBalance());
     const media = matchMedia('(max-width: 800px)');
     const onResize = () => setMobile(media.matches);
@@ -55,6 +58,7 @@ export default function App() {
   }, [mobile, drawer]);
 
   function navigate(next: Page) {
+    if (next === 'hearth') setHearthOpened(true);
     setPage(next); setDrawer(false);
     if (location.hash !== `#${next}`) location.hash = next;
     if (mobile && drawer) requestAnimationFrame(() => content.current?.focus({ preventScroll: true }));
@@ -63,7 +67,7 @@ export default function App() {
     if (!prompt.trim() || run?.status === 'working') return;
     void startAgent(prompt.trim().slice(0, 1200)); setComposer(''); setDismissed(false); navigate('chat');
   }
-  function newChat() { clearAgent(); setComposer(''); setDismissed(false); navigate('chat'); }
+  function newChat() { clearAgent(); setComposer(starterPrompt); setDismissed(false); navigate('chat'); }
   function toggleMute() {
     setMuted(value => !value);
     try { localStorage.setItem('chatjipiti:muted', String(!muted)); } catch { /* Session preference still works. */ }
@@ -88,7 +92,7 @@ export default function App() {
       }
     }}>
       <div className="sidebar-brand"><button className="brand-mark icon-button" onClick={newChat} aria-label="ChatJiPiTi home"><Icon name="spark"/></button><span>ChatJiPiTi</span>{!mobile && <button className="icon-button sidebar-collapse" aria-label="Collapse sidebar" onClick={() => setSidebarCollapsed(true)}><Icon name="panel"/></button>}{mobile && <button className="icon-button" onClick={() => { setDrawer(false); menu.current?.focus(); }} aria-label="Close navigation"><Icon name="close"/></button>}</div>
-      <nav className="primary-nav"><button onClick={newChat} className="nav-item"><Icon name="edit"/>New chat</button><button onClick={() => navigate('games')} className={`nav-item ${page === 'games' ? 'selected' : ''}`} aria-current={page === 'games' ? 'page' : undefined}><Icon name="games"/>ChatJiPiTi Game<span className="new-label">NEW</span></button></nav>
+      <nav className="primary-nav"><button onClick={newChat} className="nav-item"><Icon name="edit"/>New chat</button><button onClick={() => navigate('games')} className={`nav-item ${page === 'games' ? 'selected' : ''}`} aria-current={page === 'games' ? 'page' : undefined}><Icon name="games"/>ChatJiPiTi Game<span className="new-label">NEW</span></button><button onClick={() => navigate('hearth')} className={`nav-item ${page === 'hearth' ? 'selected' : ''}`} aria-current={page === 'hearth' ? 'page' : undefined}><HearthMark/>App Studio</button></nav>
       <div className="sidebar-section"><p>Play while you wait</p><nav>{games.map(game => <button key={game.id} className={`nav-item game-nav ${page === game.id ? 'selected' : ''}`} onClick={() => navigate(game.id)} aria-current={page === game.id ? 'page' : undefined}><Icon name={game.icon} style={{ color: game.color === 'purple' ? '#d1b5fb' : game.color === 'coral' ? '#ffb4a2' : '#ffdb69' }}/><span>{game.title}</span></button>)}</nav></div>
       <div className="sidebar-section recent-chats"><p>Your chats</p>{run ? <button className={`nav-item recent-title ${page === 'chat' ? 'selected' : ''}`} onClick={() => navigate('chat')}>{run.prompt}</button> : <span className="empty-chats">Your next big idea starts here.</span>}</div>
       <div className="sidebar-bottom"><button className="wallet-link" onClick={() => navigate('profile')}><Icon name="reset"/><span><b>{balance} banked {balance === 1 ? 'reset' : 'resets'}</b><small>Demo wallet</small></span><Icon name="chevron"/></button><button className="profile-link" onClick={() => { setNickname(name); navigate('profile'); }}><span className="avatar">{name.slice(0, 1).toUpperCase()}</span><span><b>{name}</b><small>Personal · demo account</small></span></button></div>
@@ -96,7 +100,8 @@ export default function App() {
     <div className="workspace" inert={mobile && drawer}>
       <header className="topbar"><div>{sidebarCollapsed && !mobile && <button className="icon-button" aria-label="Expand sidebar" onClick={() => setSidebarCollapsed(false)}><Icon name="panel"/></button>}<button ref={menu} className="icon-button mobile-menu" aria-label="Open sidebar" aria-expanded={drawer} aria-controls="sidebar" onClick={() => setDrawer(true)}><Icon name="menu"/></button><button className="topbar-title" onClick={() => navigate('chat')}>ChatJiPiTi <Icon name="down"/></button><span className="demo-pill">Demo</span></div><button className="icon-button" aria-label={muted ? 'Enable game sounds' : 'Mute game sounds'} aria-pressed={!muted} onClick={toggleMute}><Icon name={muted ? 'mute' : 'sound'}/></button></header>
       {run && run.status !== 'stopped' && page !== 'chat' && <div className="agent-strip">{agentBusy ? <span className="thinking-dot"/> : <Icon name="check"/>}<span>{agentBusy ? 'Demo agent is working' : 'Your demo is ready'} · {elapsed}s</span><button onClick={() => navigate('chat')}>View chat <Icon name="chevron"/></button></div>}
-      <main ref={content} className="content-scroll" tabIndex={-1}>
+      <main ref={content} className={`content-scroll ${page === 'hearth' ? 'hearth-active' : ''}`} tabIndex={-1}>
+        {hearthOpened && <HearthStudio active={page === 'hearth'} onPlay={() => navigate('games')}/>}
         {page === 'chat' && <div className={`chat-page ${run ? 'has-conversation' : ''}`}>
           {!run ? <div className="chat-welcome"><h1>What can I help with?</h1></div> : <div className="conversation"><div className="user-message">{run.prompt}</div><div className="assistant-message"><span className="assistant-avatar"><Icon name="spark"/></span><div><p className="assistant-name">ChatJiPiTi</p>{agentBusy ? <><div className="thinking-label"><span className="thinking-dot"/>{agentPhase}<span>{elapsed}s</span></div><p>I’m on it. This might take a little thinking.</p></> : run.status === 'stopped' ? <p>Stopped. Ready when you are.</p> : <><p>Your demo task is ready. Here’s the direction I’d take:</p><ul className="demo-answer"><li>Start with one clear outcome and a small first version.</li><li>Make the main interaction feel good on a phone.</li><li>Test the whole experience, then share what you made.</li></ul></>}<><ChatGames muted={muted}/><p className="mock-note">{agentBusy ? 'Simulated agent · ready in about 30 seconds.' : 'Scripted demo response. No model request was made.'}</p></></div></div></div>}
           <div className="composer-area"><form className="composer" onSubmit={event => { event.preventDefault(); send(); }}><label className="sr-only" htmlFor="chat-prompt">Message ChatJiPiTi</label><textarea id="chat-prompt" rows={2} value={composer} onChange={event => setComposer(event.target.value)} placeholder="Ask anything" maxLength={1200} onKeyDown={event => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); send(); } }}/><div className="composer-controls"><div className="composer-tools"><span className="mock-note">Demo chat</span></div>{agentBusy ? <button type="button" className="send-button" aria-label="Stop demo" onClick={() => { stopAgent(); }}><Icon name="stop"/></button> : <button type="submit" className="send-button" aria-label="Send message" disabled={!composer.trim()}><Icon name="arrow"/></button>}</div></form>{!run && <div className="prompt-suggestions">{suggestions.map(prompt => <button key={prompt} onClick={() => send(prompt)}>{prompt}</button>)}</div>}<p className="composer-note">Independent ChatGPT-style prototype. Account resets are simulated.</p></div>

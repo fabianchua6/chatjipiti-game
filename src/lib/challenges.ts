@@ -1,5 +1,6 @@
 import { randomFromSeed } from './game.ts';
 export type GameMode = 'daily' | 'practice';
+export const CIRCLE_BOARD_ASPECT = 1.26;
 export type Circle = { x: number; y: number; radius: number };
 export type CircleScore = { position: number; size: number; total: number };
 export const TYPING_WORD_LIMIT = 15;
@@ -37,21 +38,23 @@ export function typingMetrics(prefix: string, elapsedMs: number, complete = fals
   const words = (prefix.match(/\S+\s/g) ?? []).length + (complete && /\S$/.test(prefix) ? 1 : 0);
   return { correct, words, wpm };
 }
-export function circleTarget(seed: string): Circle {
+export function circleTarget(seed: string = crypto.randomUUID(), aspect = 1): Circle {
   const random = randomFromSeed(`circle:${seed}`);
   const radius = 0.11 + random() * 0.10;
-  return { radius, x: 0.27 + random() * 0.46, y: 0.27 + random() * 0.46 };
+  const marginX = (radius + 0.015) / aspect;
+  const marginY = radius + 0.015;
+  return { radius, x: marginX + random() * (1 - 2 * marginX), y: marginY + random() * (1 - 2 * marginY) };
 }
-export function scoreCircle(target: Circle, drawn: Circle): CircleScore {
+export function scoreCircle(target: Circle, drawn: Circle, aspect = 1): CircleScore {
   if (![target.x, target.y, target.radius, drawn.x, drawn.y, drawn.radius].every(Number.isFinite) || drawn.radius <= 0 || target.radius <= 0) return { position: 0, size: 0, total: 0 };
   const clamp = (n: number) => Math.max(0, Math.min(1, n));
-  const distance = Math.hypot(drawn.x - target.x, drawn.y - target.y);
+  const distance = Math.hypot((drawn.x - target.x) * aspect, drawn.y - target.y);
   const position = Math.round(50 * clamp(1 - distance / (target.radius * 2)) * 10) / 10;
   const size = Math.round(50 * clamp(1 - Math.abs(drawn.radius - target.radius) / target.radius) * 10) / 10;
   return { position, size, total: Math.round((position + size) * 10) / 10 };
 }
-export function constrainCircle(circle: Circle): Circle {
+export function constrainCircle(circle: Circle, aspect = 1): Circle {
   const x = Math.max(0, Math.min(1, circle.x));
   const y = Math.max(0, Math.min(1, circle.y));
-  return { x, y, radius: Math.max(0, Math.min(circle.radius, x, 1 - x, y, 1 - y)) };
+  return { x, y, radius: Math.max(0, Math.min(circle.radius, x * aspect, (1 - x) * aspect, y, 1 - y)) };
 }

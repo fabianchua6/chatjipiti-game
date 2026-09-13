@@ -2,6 +2,7 @@ import { useGameClock } from '../../lib/useGameClock';
 import { getMatchPhrase } from '../../lib/matchPhrases';
 import { markPlayed } from '../../lib/playedToday';
 import { useEffect, useRef, useState } from 'react';
+import GameResultOverlay from '../../components/GameResultOverlay';
 import { BOARD_SIZES, dailySeed, makeBoard, readBest, saveBest } from '../../lib/game';
 import type { BoardSize, MemoryResult } from '../../lib/game';
 
@@ -12,6 +13,8 @@ import { useArtLibrary } from '../../lib/appearance';
 import type { ArtAsset } from '../../lib/appearance';
 import { playSound } from '../../lib/sound';
 import './memory.css';
+import GameRoundControls, { roundLegend, useRoundShortcuts } from '../../components/GameRoundControls';
+import KeyboardLegend from '../../components/KeyboardLegend';
 import ArtworkSettings from '../studio/ArtworkSettings';
 
 type Props = { mode: 'daily' | 'practice'; muted: boolean; paused?: boolean };
@@ -112,6 +115,7 @@ function MemoryBoard({ size, seed, mode, onNext, onRestart, muted, pack, paused 
     }
   }
 
+  useRoundShortcuts('memory', Boolean(result) && !paused, onRestart);
   return <>
     <div className="scoreboard"><span><strong>{seconds}s</strong> elapsed</span><span><strong>{moves}</strong> moves</span><span><strong>{matched.length / 2}/{Math.floor(size * size / 2)}</strong> pairs</span></div>
     <div className="memory-arena">
@@ -133,11 +137,17 @@ function MemoryBoard({ size, seed, mode, onNext, onRestart, muted, pack, paused 
       })}
     </div>
     {celebration && <MatchCelebration sequence={celebration.sequence} combo={celebration.combo}/>}
+    {result && <GameResultOverlay game="memory" summary={`Board cleared · ${result.seconds}s · ${result.moves} moves`} onReplay={onRestart} onNextBoard={onNext} delay={1200} paused={paused}/> }
     </div>
     <div className="memory-deck-meta">{pack.name}<i/>Astra poster edition</div>
     <p className="notice" aria-live="polite">{notice}</p>
-    {result && <div className="result" role="status"><h2>You’re absolutely right!</h2><p>Cleared in {result.seconds}s · {result.moves} moves</p><div className="button-row">{onNext && <button onClick={onNext}>Next board</button>}<button className="secondary" onClick={onRestart}>Play again</button></div>{!saved && <p>Your browser could not save this score. You can still play.</p>}</div>}
+    {result && <div className="result" role="status"><h2>You’re absolutely right!</h2><p>Cleared in {result.seconds}s · {result.moves} moves</p><div className="button-row">{onNext && <button className="primary" onClick={onNext}>Next board</button>}<GameRoundControls game="memory" onRestart={onRestart}/></div>{!saved && <p>Your browser could not save this score. You can still play.</p>}</div>}
     {best && <p className="muted">Previous best on this board: {best.seconds}s · {best.moves} moves</p>}
     <p className="muted">{mode === 'daily' ? 'Shared daily board · repeat attempts welcome.' : 'Free play · a fresh board each run.'} Scores stay on this device.</p>
+    <KeyboardLegend shortcuts={result ? roundLegend : [
+      { keys: ['Tab'], label: 'Next card or button' },
+      { keys: ['Shift', 'Tab'], label: 'Previous' },
+      { keys: ['Space', 'Enter'], separator: '/', label: 'Flip / select' },
+    ]} note={result ? undefined : 'Use Tab to focus a card or button, then Space or Enter to select it.'} />
   </>;
 }

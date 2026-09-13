@@ -37,7 +37,7 @@ Display correct characters, completed words, WPM, elapsed time and fatal mistake
 
 ## Circle: Draw Me a Yellow Circle
 
-A generated pixel-art room follows the supplied stage reference: a large dark screen, wood paneling and an older man seen from behind in a lounge chair. A square interactive drawing area sits inside the illustrated screen. Tibo asks for a yellow circle. Target appears for three seconds, then disappears. First touch sets centre; drag sets radius; release submits. Re-show the target to compare. Pointer cancel discards a stroke. Keyboard support: arrows move centre, +/- resize, Shift refines step, Enter submits, Escape cancels. Coordinates normalize to a square that remains geometrically consistent on resize.
+A generated pixel-art room follows the supplied stage reference: a large dark screen, wood paneling and an older man seen from behind in a lounge chair. A square interactive drawing area sits inside the illustrated screen. Tibo asks for a yellow circle. Target appears for three seconds, then disappears. First touch sets centre; drag sets radius; release submits. Re-show the target to compare. Pointer cancel discards a stroke. Drawing uses mouse or touch only. Keyboard shortcuts manage rounds: Space starts or restarts; Enter opens the next game after completion. Coordinates normalize to a square that remains geometrically consistent on resize.
 
 Position and radius each contribute 50 points. Position falls linearly to zero at a distance of two target radii; size falls linearly to zero at a radius error equal to the target radius. A zero-radius stroke scores zero. At 95+, Pope Tibo descends and a synthesized chord plays when sound is enabled.
 

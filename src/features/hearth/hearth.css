@@ -1,0 +1,47 @@
+.content-scroll.hearth-active { overflow: hidden; padding-bottom: 0; }
+.hearth-studio { display: flex; flex-direction: column; height: 100%; min-height: 0; padding: 6px 20px 0; }
+.hearth-studio[hidden] { display: none; }
+.hearth-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding: 8px 0 20px; }
+.hearth-title { display: flex; align-items: center; gap: 12px; }
+.hearth-title > .hearth-mark { width: 32px; height: 32px; flex: none; color: #edb986; }
+.hearth-title h1 { margin: 0; font-size: 20px; font-weight: 500; letter-spacing: -.02em; }
+.hearth-title p { margin: 5px 0 0; font-size: 13px; line-height: 1.5; color: var(--text-secondary); }
+.hearth-actions { display: flex; align-items: center; gap: 14px; }
+.hearth-actions a { display: inline-flex; align-items: center; gap: 7px; color: var(--text-primary); text-decoration: none; font-size: 13px; min-height: 40px; padding: 4px 10px; border: 1px solid #484848; border-radius: 8px; }
+.hearth-actions a:hover { background: #303030; }
+.hearth-actions a:focus-visible { outline: 2px solid #edb986; outline-offset: 3px; }
+.hearth-actions .icon, .hearth-footer .icon { width: 16px; height: 16px; }
+.hearth-actions .text-button, .hearth-footer .text-button { font-size: 13px; }
+.hearth-frame { position: relative; flex: 1; min-height: 0; overflow: hidden; border: 1px solid #3c3c3c; border-radius: 12px; background: #171717; }
+.hearth-frame iframe { position: absolute; inset: 0; visibility: hidden; display: block; width: 100%; height: 100%; border: 0; color-scheme: normal; }
+.hearth-footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 6px 2px; }
+.hearth-footer > span { font-size: 11px; line-height: 1.5; color: var(--text-secondary); }
+.hearth-footer button { flex: none; min-height: 36px; }
+@media (max-width: 800px) {
+  .hearth-studio { padding: 0 12px; }
+  .hearth-heading { gap: 8px; padding-bottom: 12px; }
+  .hearth-title h1 { font-size: 18px; }
+  .hearth-title p { font-size: 12px; }
+  .hearth-actions { width: 100%; justify-content: space-between; }
+  .hearth-footer { align-items: flex-start; gap: 10px; padding-block: 8px; }
+  .hearth-footer button { min-height: 40px; }
+}
+
+.hearth-frame.is-ready iframe { visibility: visible; }
+.hearth-preview { height: 100%; overflow: auto; padding: 28px clamp(20px, 5vw, 70px) 18px; display: flex; flex-direction: column; align-items: center; }
+.hearth-preview-copy { text-align: center; max-width: 480px; }
+.hearth-preview-copy > span { display: inline-block; font-size: 11px; color: #c5bfb3; }
+.hearth-preview-copy h2 { margin: 12px 0 8px; font-size: 27px; font-weight: 500; letter-spacing: -.025em; }
+.hearth-preview-copy p { margin: 0; color: #b6b8ae; font-size: 13px; line-height: 1.6; }
+.hearth-office { width: min(100%, 690px); flex: 1 0 160px; min-height: 160px; max-height: 310px; margin: 12px 0; }
+.hearth-preview-open { text-align: center; }
+.hearth-preview-open a { display: inline-flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 8px; background: #eddbbe; color: #302d28; text-decoration: none; font-size: 13px; font-weight: 500; min-height: 42px; }
+.hearth-preview-open a:hover { background: #f7e9d3; }
+.hearth-preview-open a:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.hearth-preview-open .icon { width: 16px; height: 16px; }
+.hearth-preview-open p { font-size: 11px; color: #b6b8ae; margin: 9px 0 0; }
+.hearth-embed-note { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@media (max-width: 800px) {
+  .hearth-preview { padding: 24px 16px 18px; }
+  .hearth-preview-copy h2 { font-size: 23px; }
+}

@@ -48,7 +48,7 @@ Static production output is `dist/`. Fonts and game artwork are bundled locally.
 
 - **You’re Absolutely Right!** — 3×3 to 6×6 memory boards; fixed Astra poster backs and 24 authored SVG geometric faces; one unmatchable blank on odd boards; smooth flips, cosmic matched-pair celebrations that grow from “YOU’RE ABSOLUTELY RIGHT” to “YOU’RE ABSOLUTELY ASTRONOMICALLY RIGHT” and “YOU’RE ABSOLUTELY ASTRONOMICALLY INFINITELY RIGHT” at four consecutive pairs; another word is added every two pairs, time and moves. Appearance choices and optional generation live in a small collapsible settings panel inside the game.
 - **Make No Mistakes** — inline pixel-text input; one wrong character ends the run; 15 words and a 30-second cap in both modes; seeded lowercase phrases; local character/WPM records; IME-aware committed input; paste blocked.
-- **Draw Me a Yellow Circle** — three-second target reveal, press-centre/drag-radius/release submission, position and size scoring; mouse, touch and keyboard; retro wood-room stage, generated Pope Tibo parody and daily reward wallet. Classic, Forest and Moon environments are selectable from the in-game settings panel.
+- **Draw Me a Yellow Circle** — three-second target reveal, press-centre/drag-radius/release submission, position and size scoring; mouse and touch drawing, keyboard round controls; retro wood-room stage, generated Pope Tibo parody and daily reward wallet. Classic, Forest and Moon environments are selectable from the in-game settings panel.
 
 Daily mode is repeatable. Challenges use UTC dates. Scores and mock rewards stay on this browser. The chat’s played-today list also resets at midnight UTC. Clearing browser data clears stored scores and play history. There are no global rankings.
 
