@@ -6,7 +6,6 @@ import { resetBalance } from './lib/records';
 import type { GameMode } from './lib/challenges';
 import { useAgentTask } from './features/chat/useAgentTask';
 import './shell.css';
-import { games } from './lib/games';
 import ChatGames from './features/chat/ChatGames';
 
 type Page = string;
