@@ -13,7 +13,7 @@ Tests cover paired-board counts/blanks, deterministic dates, ranking, corrupt/un
 - Memory reveals blanks, locks mismatches, completes boards and advances; cards flip smoothly, matched pairs celebrate, and the previous score survives reload. The board can use all 24 authored SVG faces.
 - Typing has exactly 15 words and a 30-second cap in either mode. It auto-completes at the final word, fails at the first incorrect character, blocks paste, supports composed committed input and stops at the active-play deadline. Finish is disabled before input.
 - Circle hides target after three seconds; pointer release scores, cancel aborts, zero-radius scores zero; drawing is pointer-only. Space starts or restarts a round; Enter opens the next game after completion. Classic, Forest and Moon environments are selectable from the in-game collapsible settings while preserving the chair, board/screen and briefcase composition.
-- Circle 95+ displays Pope Tibo; daily earns one reset; repeat success does not duplicate the balance; practice never awards resets.
+- Circle 90+ displays Pope Tibo; daily earns one reset; repeat success does not duplicate the balance; practice never awards resets.
 - Sidebar profile wallet updates and persists across reload.
 - Mobile drawer opens/closes, contains keyboard focus, and navigation moves focus to content.
 - Phone layout has no horizontal overflow; reduced-motion and mute preferences work.

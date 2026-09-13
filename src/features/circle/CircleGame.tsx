@@ -113,7 +113,7 @@ export default function CircleGame({ mode, muted, paused = false }: { mode: Game
     const result = scoreCircle(target, circle, CIRCLE_BOARD_ASPECT);
     setDrawn(circle); setScore(result); setPhase('result');
     if (best === null || result.total > best) setSaved(writeRecord(recordKey, result.total));
-    if (result.total >= 95) {
+    if (result.total >= 90) {
       if (mode === 'daily') {
         const finishedAttempt = attempt.current;
         void claimResetSafely(seed).then(value => { if (finishedAttempt === attempt.current) setReward(value); });
@@ -121,7 +121,7 @@ export default function CircleGame({ mode, muted, paused = false }: { mode: Game
       stopBlessing.current();
       stopBlessing.current = playCircleBlessing(muted);
     } else playSound('match', muted);
-    setHint(result.total >= 95 ? 'Hallelujah! Pope Tibo approves.' : 'Your circle is yellow. That’s a start.');
+    setHint(result.total >= 90 ? 'Hallelujah! Pope Tibo approves.' : 'Your circle is yellow. That’s a start.');
   }
   function cancel() {
     if (phase !== 'draw') return;
@@ -129,7 +129,7 @@ export default function CircleGame({ mode, muted, paused = false }: { mode: Game
     setHint('Stroke cancelled. Try again without lifting until you’re done.');
   }
   useRoundShortcuts('circle', Boolean(score) && !paused, start);
-  const blessed = score !== null && score.total >= 95;
+  const blessed = score !== null && score.total >= 90;
   return <section ref={surface} className="game-surface circle-game">
     <div className="game-heading"><div><h1>Draw Me a Yellow Circle</h1><p>A tiny test of memory. A chance of divine intervention.</p></div><span className="game-glyph gold"><Icon name="circle"/></span></div>
     <ArtworkSettings kind="environment" disabled={phase === 'reveal' || phase === 'draw'}/>

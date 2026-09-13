@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { apiRequest, selectArt, useArtLibrary } from '../../lib/appearance';
 import type { ArtAsset, ArtKind } from '../../lib/appearance';
-import AgentShape from '../memory/AgentShape';
+import CardFace from '../memory/CardFace';
 import Icon from '../../components/Icon';
 import './studio.css';
 
@@ -76,8 +76,8 @@ export default function ArtworkSettings({ kind, disabled = false }: { kind: ArtK
       <legend className="sr-only">{kind === 'environment' ? 'Environment settings' : 'Card artwork settings'}</legend>
       <div className={`art-gallery ${kind === 'cards' ? 'card-gallery' : ''}`}>
         {library.assets.map(asset => <button key={asset.id} className={`art-choice ${library.selected.id === asset.id ? 'is-selected' : ''}`} aria-pressed={library.selected.id === asset.id} onClick={() => library.select(asset)}>
-          {asset.kind === 'environment' ? <img src={asset.url} alt={`${asset.name} circle game environment`} loading="lazy"/> : <span className="pack-preview" aria-hidden="true">{asset.url ? <img src={asset.url} alt=""/> : [0,1,2,3,4,5].map(index => <AgentShape key={index} face={asset.id === 'prism' ? index+18 : index} prism={asset.id === 'prism'}/>)}</span>}
-          <span className="art-choice-caption"><b>{asset.name}</b>{library.selected.id === asset.id && <Icon name="check"/>}</span>
+          {asset.kind === 'environment' ? <img src={asset.url} alt={`${asset.name} circle game environment`} loading="lazy"/> : <span className="pack-preview" aria-hidden="true">{[0,1,2,3,4,5].map(index => <CardFace key={index} pack={asset} face={index} paused/>)}</span>}
+          <span className="art-choice-caption"><span><b>{asset.name}</b>{asset.id === 'zootopia' && <small>Original cast · Zootopia-inspired</small>}</span>{library.selected.id === asset.id && <Icon name="check"/>}</span>
         </button>)}
       </div>
       <details className="artwork-generate"><summary><Icon name="plus"/>Generate a new {kind === 'environment' ? 'environment' : 'card pack'}<span>GPT-Image-2.5</span></summary>
@@ -85,8 +85,8 @@ export default function ArtworkSettings({ kind, disabled = false }: { kind: ArtK
         <div className="generation-heading"><h2>{kind === 'environment' ? 'Where to next?' : 'Describe your new pack'}</h2></div>
         <p>{kind === 'environment' ? 'Change the setting and outfit. The board, chair and briefcase stay part of the scene.' : 'Describe a set of eighteen distinct symbols. We’ll turn the image into a playable card pack.'}</p>
         <label className="sr-only" htmlFor="art-prompt">Describe your {kind === 'environment' ? 'environment' : 'card art pack'}</label>
-        <textarea id="art-prompt" value={prompt} onChange={event => setPrompt(event.target.value)} rows={3} maxLength={800} placeholder={kind === 'environment' ? 'A tiny observatory above the clouds, at golden hour…' : 'Jewel-like geometric agents, sea-glass colors and soft edges…'}/>
-        <div className="prompt-chips">{(kind === 'environment' ? ['An underwater research station','A Japanese garden in autumn','A little cabin on Mars'] : ['Tiny cosmic creatures','Glass geometric constellations','Botanical shapes in pastel colors']).map(text => <button key={text} type="button" onClick={() => setPrompt(text)}>{text}</button>)}</div>
+        <textarea id="art-prompt" value={prompt} onChange={event => setPrompt(event.target.value)} rows={3} maxLength={800} placeholder={kind === 'environment' ? 'A tiny observatory above the clouds, at golden hour…' : 'Tiny woodland characters with distinct silhouettes and playful outfits…'}/>
+        <div className="prompt-chips">{(kind === 'environment' ? ['An underwater research station','A Japanese garden in autumn','A little cabin on Mars'] : ['Tiny cosmic creatures','Pixel pets in playful costumes','Botanical shapes in pastel colors']).map(text => <button key={text} type="button" onClick={() => setPrompt(text)}>{text}</button>)}</div>
         <div className="generation-controls"><label htmlFor="art-name" className="sr-only">Name this creation</label><input id="art-name" value={name} maxLength={60} onChange={event => setName(event.target.value)} placeholder="Give it a name (optional)"/><button className="primary" disabled={!configured || !prompt.trim() || busy} type="submit"><Icon name={busy ? 'time' : 'spark'}/>{busy ? 'Creating your artwork…' : 'Generate artwork'}</button></div>
         {configured === false && <div className="connection-notice"><p>Connect your OpenAI key to generate artwork.</p><button type="button" onClick={() => setShowSetup(value => !value)}>{showSetup ? 'Hide setup' : 'Connect OpenAI'}<Icon name="chevron"/></button></div>}
         {busy && <p role="status" className="generation-progress"><span className="thinking-dot"/>Your artwork is being made. You can close these settings and keep playing.</p>}

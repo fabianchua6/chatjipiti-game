@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default function CircleResult({ score, best, mode, reward, saved, onRestart }: Props) {
-  const blessed = score.total >= 95;
+  const blessed = score.total >= 90;
   const verdict = blessed ? 'Blessed by Tibo.' : score.total >= 75 ? 'Almost perfect.' : 'Give it another go.';
   return <div className="circle-round-result">
     <div id="circle-result-summary" role="status">

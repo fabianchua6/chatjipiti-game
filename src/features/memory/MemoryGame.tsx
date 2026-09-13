@@ -6,7 +6,8 @@ import GameResultOverlay from '../../components/GameResultOverlay';
 import { BOARD_SIZES, dailySeed, makeBoard, readBest, saveBest } from '../../lib/game';
 import type { BoardSize, MemoryResult } from '../../lib/game';
 
-import AgentShape from './AgentShape';
+import CardFace from './CardFace';
+import { PET_FACES, ZOOTOPIA_NAMES } from '../../lib/cardCharacters';
 import { SHAPE_NAMES } from './shapeNames';
 import MatchCelebration from './MatchCelebration';
 import { useArtLibrary } from '../../lib/appearance';
@@ -87,7 +88,7 @@ function MemoryBoard({ size, seed, mode, onNext, onRestart, muted, pack, paused 
       schedule(() => { setOpen(open); timer.current = undefined; }, 700);
       return;
     }
-    setNotice('Shape revealed. Find its pair.');
+    setNotice('Card revealed. Find its pair.');
     if (next.length < 2) return;
     const totalMoves = moves + 1;
     setMoves(totalMoves);
@@ -110,7 +111,7 @@ function MemoryBoard({ size, seed, mode, onNext, onRestart, muted, pack, paused 
       }, 380);
     } else {
       combo.current = 0;
-      setNotice('Different shapes. Try another pair.');
+      setNotice('Different cards. Try another pair.');
       schedule(() => { setOpen([]); timer.current = undefined; }, 850);
     }
   }
@@ -123,13 +124,13 @@ function MemoryBoard({ size, seed, mode, onNext, onRestart, muted, pack, paused 
       {board.map((face, index) => {
         const isMatched = matched.includes(index);
         const visible = open.includes(index) || isMatched;
-        const shape = face === null ? null : pack.id === 'prism' ? (face + 6) % SHAPE_NAMES.length : face;
-        const label = face === null ? 'Blank card' : pack.url ? `Art symbol ${face + 1}` : SHAPE_NAMES[shape!];
+        const shape = face;
+        const label = face === null ? 'Blank card' : pack.id === 'pets' ? PET_FACES[face].name : pack.id === 'zootopia' ? ZOOTOPIA_NAMES[face] : pack.url ? `Art symbol ${face + 1}` : SHAPE_NAMES[shape!];
         return <button key={index} className={`memory-card ${visible ? 'revealed' : ''} ${isMatched ? 'matched' : ''}`} aria-label={visible ? label : `Reveal card ${index + 1}`} disabled={paused || isMatched || Boolean(result)} onClick={() => flip(index)}>
           <span className="card-flip" aria-hidden="true">
             <span className="card-side card-back" style={{ backgroundSize: `${size * 100}% ${size * 100}%`, backgroundPosition: `${index % size / (size - 1) * 100}% ${Math.floor(index / size) / (size - 1) * 100}%` }}/>
             <span className="card-side card-front">
-              {face !== null ? pack.url ? <span className="card-atlas-icon" style={{ backgroundImage: `url("${pack.url}")`, backgroundPosition: `${face % 6 / 5 * 100}% ${Math.floor(face / 6) / 2 * 100}%` }}/> : <AgentShape face={shape!} prism={pack.id === 'prism'}/> : <i className="blank-dot"/>}
+              {face !== null ? <CardFace pack={pack} face={face} paused={paused}/> : <i className="blank-dot"/>}
               {isMatched && <i className="match-check"/>}
             </span>
           </span>

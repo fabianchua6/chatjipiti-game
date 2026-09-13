@@ -1,0 +1,15 @@
+.pet-card-face { position: relative; display: block; width: 58%; max-width: 80px; aspect-ratio: 12 / 13; }
+.pet-sprite { display: block; position: absolute; inset: 0; background-size: 800% 1100%; background-position: 0 0; background-repeat: no-repeat; image-rendering: pixelated; animation: pet-card-idle 1.8s steps(6) infinite; }
+.memory-card:not(.revealed) .pet-sprite { animation-play-state: paused !important; }
+.pet-card-face.is-starry .pet-sprite { inset: 8% 10% 8%; }
+.memory-arena .card-front .pet-stars, .pack-preview .pet-stars { position: absolute; inset: 0; width: 100%; max-width: none; height: 100%; color: #ffda74; filter: none; }
+.is-starry:before { content: ''; position: absolute; inset: 17% 8%; border: 1px solid #ad8a41; border-radius: 50%; background: #c0952721; }
+.pack-preview .pet-card-face { width: 48px; max-width: 100%; }
+.pack-preview .card-atlas-icon { display: block; width: 48px; max-width: 100%; }
+@keyframes pet-card-idle { to { background-position-x: 85.7142857%; } }
+@media (prefers-reduced-motion: reduce) { .pet-sprite { animation: none; } }
+@media (max-width: 600px) { .pack-preview .pet-card-face, .pack-preview .card-atlas-icon { width: 32px; } }
+.art-choice-caption > span { min-width: 0; }
+.art-choice-caption small { display: block; font-size: 9px; color: #b4b4b4; line-height: 1.5; margin-top: 3px; }
+.pack-preview { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pack-preview .pet-card-face, .pack-preview .card-atlas-icon { min-width: 0; }

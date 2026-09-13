@@ -1,5 +1,6 @@
 import { useId, useRef, useState } from 'react';
 import Icon from '../../components/Icon';
+import CreateGameLink from '../../components/CreateGameLink';
 import { games } from '../../games';
 import type { GameId } from '../../lib/games';
 import { usePlayedToday } from './usePlayedToday';
@@ -49,6 +50,7 @@ export default function ChatGames({ muted }: { muted: boolean }) {
           <span className="chat-game-emblem"><Icon name={game.icon}/></span><strong>{game.title}</strong>
         </button>)}
       </div>
+      {expanded && choosing && <CreateGameLink/>}
       {expanded && choosing && activeGame && <button className="inline-game-back" onClick={resume}><Icon name="back"/>Resume {activeGame.title}</button>}
       {Game && activeGame && <div ref={panel} id={`${choicesId}-game`} className="chat-inline-game" role="region" aria-label={`${activeGame.title} mini game`} hidden={paused} inert={paused} data-game-paused={paused || undefined}>
         <div className="inline-game-toolbar"><span><Icon name={activeGame.icon}/><strong>{activeGame.title}</strong></span><div><button type="button" onClick={() => { setChoosing(true); requestAnimationFrame(() => invitation.current?.focus({preventScroll:true})); }}>Games</button><button type="button" onClick={minimise} aria-label="Minimise game"><Icon name="down"/><span>Minimise</span></button></div></div>
