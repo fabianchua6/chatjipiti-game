@@ -21,6 +21,14 @@ Tests cover paired-board counts/blanks, deterministic dates, ranking, corrupt/un
 ## Before submission
 
 - Decide whether to make the repository public and choose hosting.
-- Replace the temporary memory mosaic with final Astra poster if desired.
+- Astra poster and five supplied geometric icon designs are integrated, with thirteen variations for larger boards.
 - Confirm daily attempt/reward rules and the desired starting chat prompt.
 - Verify the event’s actual submission brief; prepare an accessible 90-second demo if still required.
+
+## Verified in the local preview, 2026-09-13
+
+- Exact supplied poster forms a fixed mosaic; revealed faces have no visible names and retain accessible shape labels.
+- Inline typing accepted ten characters and stopped on the next wrong key. Clicking the passage resumed native input. Backspace ended a second run with five accepted characters.
+- Updated room pointer test scored 98.8/100 and displayed the blessing; repeat daily success reported already banked and retained a balance of one.
+- Desktop and 390px layout inspected; phone-width typing has no horizontal overflow. Real mobile keyboard and IME behavior still require physical-device testing.
+- Rule suite: 12 passing tests. Production TypeScript/Vite build passes.

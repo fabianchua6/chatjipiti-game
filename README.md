@@ -31,9 +31,9 @@ Static production output is `dist/`. Fonts and game artwork are bundled locally.
 
 ## Games
 
-- **You’re Absolutely Right!** — 3×3 to 6×6 memory boards; fixed mosaic backs; one unmatchable blank on odd boards; time and moves.
-- **Make No Mistakes** — one wrong character ends the run; Daily 60s / Free Play 300s; seeded progressive phrases; local character/WPM records; IME-aware committed input; paste blocked.
-- **Draw Me a Yellow Circle** — three-second target reveal, press-centre/drag-radius/release submission, position and size scoring; mouse, touch and keyboard; generated Tibo parody and daily reward wallet.
+- **You’re Absolutely Right!** — 3×3 to 6×6 memory boards; fixed Astra poster backs and icon-only geometric faces; one unmatchable blank on odd boards; time and moves.
+- **Make No Mistakes** — inline pixel-text input; one wrong character ends the run; Daily 60s / Free Play 300s; seeded progressive phrases; local character/WPM records; IME-aware committed input; paste blocked.
+- **Draw Me a Yellow Circle** — three-second target reveal, press-centre/drag-radius/release submission, position and size scoring; mouse, touch and keyboard; retro wood-room stage, generated Pope Tibo parody and daily reward wallet.
 
 Daily mode is repeatable. Challenges use UTC dates. Scores and mock rewards stay on this browser. Clearing browser data clears them. There are no global rankings.
 
@@ -50,4 +50,4 @@ The GitHub repository is `fabianchua6/chatjipiti-game`. The local folder retains
 
 Read [PRODUCT.md](PRODUCT.md), [CONTRIBUTING.md](CONTRIBUTING.md), [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md) and [docs/ASSETS.md](docs/ASSETS.md).
 
-This is a parody prototype. ChatGPT authentication, model execution, agent detection and real usage resets are not connected. The memory poster remains temporary abstract art.
+This is a parody prototype. ChatGPT authentication, model execution, agent detection and real usage resets are not connected.

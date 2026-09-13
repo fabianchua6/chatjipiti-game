@@ -1,0 +1,1 @@
+export const SHAPE_NAMES = ['Pink flower', 'Cyan hourglass', 'Coral four rings', 'Red rounded cross', 'Purple diamond beads', 'Gold sun', 'Mint pinwheel', 'Blue compass', 'Orange hexagon', 'Lilac orbit', 'Lime double chevron', 'Rose bow', 'Turquoise spiral', 'Amber four diamonds', 'Indigo crescent', 'Pink sparkle', 'Green nested squares', 'Peach three petals'];

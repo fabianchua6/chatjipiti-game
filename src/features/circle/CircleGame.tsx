@@ -97,6 +97,7 @@ export default function CircleGame({ mode, muted }: { mode: GameMode; muted: boo
     <div className="circle-layout">
       <div className="circle-play">
         <div className="circle-stage-label" aria-live="polite"><span>{phase === 'idle' ? 'A simple request' : phase === 'reveal' ? 'Remember this circle' : phase === 'draw' ? 'Now, draw it from memory' : 'The moment of truth'}</span>{phase === 'reveal' && <b>{countdown}</b>}</div>
+        <div className={`retro-room ${blessed ? 'blessed' : ''}`} role="group" aria-label="Pixel-art wood room with a seated man watching a large screen">
         <div className={`circle-canvas ${blessed ? 'is-blessed' : ''}`}>
           <svg ref={stage} className="drawing-surface" viewBox="0 0 1000 1000" tabIndex={0} role="application" aria-label="Circle drawing area" aria-describedby="circle-keyboard" onKeyDown={keyboard} onPointerDown={event => {
             if (phase !== 'draw' || !event.isPrimary || event.button !== 0 || activePointer.current !== null) return;
@@ -109,23 +110,20 @@ export default function CircleGame({ mode, muted }: { mode: GameMode; muted: boo
             if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
             if (final) submit(final);
           }} onPointerCancel={cancel} onLostPointerCapture={() => { if (activePointer.current !== null) cancel(); }}>
-            <defs><pattern id="dot-grid" width="50" height="50" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1.7" fill="#5b5744"/></pattern></defs>
-            <rect width="1000" height="1000" fill="url(#dot-grid)"/>
             {phase === 'idle' && <g aria-hidden="true"><circle cx="500" cy="500" r="195" fill="none" stroke="#746940" strokeWidth="6" strokeDasharray="13 16"/><path d="M485 500h30m-15-15v30" stroke="#746940" strokeWidth="4"/></g>}
             {(phase === 'reveal' || phase === 'result') && <circle className="target-circle" cx={target.x * 1000} cy={target.y * 1000} r={target.radius * 1000} fill={phase === 'reveal' ? '#f8d55d20' : 'none'} stroke={phase === 'reveal' ? '#ffdb69' : '#f2eee3'} strokeWidth="7" strokeDasharray={phase === 'result' ? '15 12' : undefined}/>}
             {drawn && <g><circle className="drawn-circle" cx={drawn.x * 1000} cy={drawn.y * 1000} r={drawn.radius * 1000} fill="#ffd85115" stroke="#ffda63" strokeWidth="8"/><circle cx={drawn.x * 1000} cy={drawn.y * 1000} r="5" fill="#ffda63"/></g>}
           </svg>
         </div>
+        {blessed && <div className="tibo-sprite pope" role="img" aria-label="Pixel-art Pope Tibo descending with a blessing"/>}
+        </div>
+        <div className="tibo-dialogue"><span>{blessed ? 'POPE TIBO' : 'TIBO'}</span><p>{blessed ? '“May your context be long and your limits be reset.”' : '“Draw me a yellow circle.”'}</p></div>
         {phase === 'result' && <div className="circle-legend"><span><i className="legend-line yellow-line"/> Your circle</span><span><i className="legend-line target-line"/> Target</span></div>}
         <p className="circle-hint" role="status">{hint || 'The target appears for 3 seconds. Then it’s all you.'}</p>
         {(phase === 'idle' || phase === 'result') && <button className="primary" onClick={start}>{phase === 'idle' ? 'Show me the circle' : 'Try another circle'}<Icon name={phase === 'idle' ? 'circle' : 'reset'}/></button>}
         <details className="keyboard-help"><summary>Keyboard controls</summary><p id="circle-keyboard">After the target disappears, focus the drawing area. Arrow keys move the centre; + and − resize. Hold Shift for finer steps. Enter submits. Escape cancels. On touch or mouse, press for the centre, drag for radius, then release.</p></details>
       </div>
-      <aside className={`tibo-scene ${blessed ? 'blessed' : ''}`} aria-label={blessed ? 'Pope Tibo blessing your circle' : 'Tibo seated in a chair'}>
-        <div className={`tibo-sprite ${blessed ? 'pope' : 'seated'}`} role="img" aria-label={blessed ? 'Pixel-art Pope Tibo with open arms' : 'Pixel-art Tibo wearing a hoodie and sitting in a chair'}/>
-        <div className="tibo-dialogue"><span>{blessed ? 'Pope Tibo' : 'Tibo'}</span><p>{blessed ? '“May your context be long and your limits be reset.”' : '“Draw me a yellow circle.”'}</p></div>
-        <p className="muted">95 points unlocks a blessing.</p>
-      </aside>
+
     </div>
     {score && <div className={`result circle-result ${blessed ? 'divine-result' : ''}`} role="status"><div><h2>{blessed ? 'You have been blessed.' : score.total >= 75 ? 'Pretty close. Pretty yellow.' : 'A circle of possibility.'}</h2><div className="result-metrics"><span><strong>{score.total}<small>/100</small></strong> total</span><span><strong>{score.position}<small>/50</small></strong> position</span><span><strong>{score.size}<small>/50</small></strong> size</span></div></div>{blessed && <div className="reset-reward"><Icon name="spark"/><strong>{mode === 'practice' ? 'A practice blessing' : reward === null ? 'Banking your reset…' : reward === 'earned' ? '+1 BANKED ASTRA RESET' : reward === 'claimed' ? 'Today’s reset is already banked' : 'Reward could not be saved'}</strong><p>{mode === 'practice' ? 'Play the Daily Challenge to earn a simulated reset.' : reward === 'unavailable' ? 'Browser storage is unavailable. Your score still counts for this run.' : 'Demo reward only. Your real ChatGPT usage is unchanged.'}</p></div>}{!saved && <p className="inline-notice">Your browser could not save this score.</p>}</div>}
     <p className="personal-best">{best !== null ? <>Personal best: <b>{best}/100</b> · </> : null}{mode === 'daily' ? 'One simulated reset per UTC day. Repeat attempts welcome.' : 'Unlimited practice. No reset rewards in this mode.'}</p>

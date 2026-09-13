@@ -79,17 +79,20 @@ export default function TypingGame({ mode, muted }: { mode: GameMode; muted: boo
   const remaining = Math.max(0, limit - Math.floor(elapsed / 1000));
   const active = phase === 'armed' || phase === 'running';
   const metrics = typingMetrics(passage.slice(0, correct), elapsed);
-  const lookBehind = Math.max(0, correct - 42);
+  const lookBehind = Math.max(0, correct - 18);
   return <section className="game-surface typing-game">
     <div className="game-heading"><div><h1>Make No Mistakes</h1><p>One wrong character. Game over. You’ve been warned.</p></div><span className="game-glyph coral"><Icon name="type"/></span></div>
     <div className="scoreboard"><span><strong>{remaining}s</strong> left</span><span><strong>{correct}</strong> characters</span><span><strong>{metrics.wpm}</strong> WPM</span></div>
     <div className={`typing-stage ${result && result.received !== null ? 'has-mistake' : ''}`}>
+      <div className="typing-inline">
       <div className="typing-passage" aria-hidden="true"><span className="typed">{passage.slice(lookBehind, correct)}</span><mark className={result?.received ? 'fatal-character' : ''}>{passage[correct] ?? ' '}</mark><span>{passage.slice(correct + 1, correct + 240)}</span></div>
       <p className="sr-only" id="typing-prompt">Type exactly: {passage.slice(correct, correct + 240)}</p>
-      <label htmlFor="typing-input" className="typing-label">{phase === 'armed' ? 'Ready. Your first character starts the clock.' : phase === 'running' ? 'Keep going. No backspaces.' : 'Type the passage exactly as shown.'}</label>
-      <textarea ref={input} id="typing-input" rows={2} disabled={!active} value={draft} onChange={event => { setDraft(event.target.value); if (!composing.current) accept(event.target.value); }} onCompositionStart={() => { composing.current = true; }} onCompositionEnd={event => { composing.current = false; accept(event.currentTarget.value); }} onPaste={event => { event.preventDefault(); setHint('No pasting. This one is all you.'); }} onDrop={event => event.preventDefault()} spellCheck={false} autoCorrect="off" autoComplete="off" autoCapitalize="none" inputMode="text" aria-describedby="typing-prompt typing-rules" placeholder={active ? 'Start typing here…' : 'Start a run to type…'} />
+      <label htmlFor="typing-input" className="sr-only">Type the passage</label>
+      <textarea ref={input} id="typing-input" onClick={event => { const field = event.currentTarget; field.setSelectionRange(field.value.length, field.value.length); }} rows={2} disabled={!active} value={draft} onChange={event => { setDraft(event.target.value); if (!composing.current) accept(event.target.value); }} onCompositionStart={() => { composing.current = true; }} onCompositionEnd={event => { composing.current = false; accept(event.currentTarget.value); }} onPaste={event => { event.preventDefault(); setHint('No pasting. This one is all you.'); }} onDrop={event => event.preventDefault()} spellCheck={false} autoCorrect="off" autoComplete="off" autoCapitalize="none" inputMode="text" aria-describedby="typing-prompt typing-rules" />
+      </div>
+      <div className="typing-status"><span aria-hidden="true">{active ? ">" : "·"}</span> {phase === 'armed' ? 'TYPE TO BEGIN' : phase === 'running' ? 'KEEP GOING_' : phase === 'finished' ? 'RUN COMPLETE' : 'READY, PLAYER ONE?'}</div>
     </div>
-    <p id="typing-rules" className="muted">{mode === 'daily' ? 'Same daily text for everyone · 60 seconds.' : 'Fresh text each run · up to 5 minutes.'} Letters, spaces and punctuation all count. Edits end the run.</p>
+    <p id="typing-rules" className="muted">{mode === 'daily' ? 'Same daily text for everyone · 60 seconds.' : 'Fresh text each run · up to 5 minutes.'} Letters, spaces and punctuation all count. Edits end the run. No pasting.</p>
     {hint && <p role="status" className="inline-notice">{hint}</p>}
     {!active && !result && <button className="primary game-start" onClick={start}>Start typing <Icon name="chevron"/></button>}
     {active && <button className="secondary game-start" disabled={phase === 'armed'} onClick={() => finish('Run banked. Nicely done.')}>Finish run</button>}

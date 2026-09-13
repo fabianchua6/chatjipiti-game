@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { BOARD_SIZES, dailySeed, makeBoard, readBest, saveBest } from '../../lib/game';
 import type { BoardSize, MemoryResult } from '../../lib/game';
 
-const AGENTS = ['Researcher', 'Coder', 'Writer', 'Designer', 'Planner', 'Analyst', 'Explorer', 'Teacher', 'Editor', 'Builder', 'Thinker', 'Debugger', 'Translator', 'Architect', 'Scientist', 'Composer', 'Navigator', 'Reviewer'];
-const COLORS = ['#c7a9ff', '#8dddce', '#f6d772', '#ffb097', '#a9cafa', '#eaaaec'];
+import AgentShape from './AgentShape';
+import { SHAPE_NAMES } from './shapeNames';
+
 type Props = { mode: 'daily' | 'practice' };
 
 export default function MemoryGame({ mode }: Props) {
@@ -53,7 +54,7 @@ function MemoryBoard({ size, seed, mode, onNext, onRestart }: { size: BoardSize;
       timer.current = setTimeout(() => { setOpen(open); timer.current = undefined; }, 700);
       return;
     }
-    setNotice(`${AGENTS[board[index]!]} revealed.`);
+    setNotice('Shape revealed. Find its pair.');
     if (next.length < 2) return;
     const totalMoves = moves + 1;
     setMoves(totalMoves);
@@ -67,7 +68,7 @@ function MemoryBoard({ size, seed, mode, onNext, onRestart }: { size: BoardSize;
         setSaved(saveBest(key, completed));
       }
     } else {
-      setNotice('Different agents. Try another pair.');
+      setNotice('Different shapes. Try another pair.');
       timer.current = setTimeout(() => { setOpen([]); timer.current = undefined; }, 850);
     }
   }
@@ -77,8 +78,8 @@ function MemoryBoard({ size, seed, mode, onNext, onRestart }: { size: BoardSize;
     <div className="memory-board" style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }} aria-label={`${size} by ${size} memory board`}>
       {board.map((face, index) => {
         const visible = open.includes(index) || matched.includes(index);
-        return <button key={index} className={`memory-card ${visible ? 'revealed' : ''} ${matched.includes(index) ? 'matched' : ''}`} aria-label={visible ? (face === null ? 'Blank card' : AGENTS[face]) : `Reveal card ${index + 1}`} disabled={matched.includes(index) || Boolean(result)} onClick={() => flip(index)} style={visible ? { background: face === null ? '#28302b' : COLORS[face % COLORS.length] } : { backgroundSize: `${size * 100}% ${size * 100}%`, backgroundPosition: `${index % size / (size - 1) * 100}% ${Math.floor(index / size) / (size - 1) * 100}%` }}>
-          {visible && face !== null && <><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="6" y="9" width="28" height="24" rx={face % 3 * 4} fill="none" stroke="currentColor" strokeWidth="3"/><path d={`M13 18h4m6 0h4M14 ${25 + face % 2}h12M20 3v6`} stroke="currentColor" strokeWidth="3"/></svg><span>{AGENTS[face]}</span></>}
+        return <button key={index} className={`memory-card ${visible ? 'revealed' : ''} ${matched.includes(index) ? 'matched' : ''}`} aria-label={visible ? (face === null ? 'Blank card' : SHAPE_NAMES[face]) : `Reveal card ${index + 1}`} disabled={matched.includes(index) || Boolean(result)} onClick={() => flip(index)} style={visible ? { background: '#191919' } : { backgroundSize: `${size * 100}% ${size * 100}%`, backgroundPosition: `${index % size / (size - 1) * 100}% ${Math.floor(index / size) / (size - 1) * 100}%` }}>
+          {visible && face !== null && <AgentShape face={face}/>}
         </button>;
       })}
     </div>
