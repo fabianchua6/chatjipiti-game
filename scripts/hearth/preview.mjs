@@ -1,0 +1,4 @@
+import {createServer} from 'node:http';
+import {readFile} from 'node:fs/promises';
+const types={js:'text/javascript',css:'text/css',html:'text/html',json:'application/json',png:'image/png',svg:'image/svg+xml',woff:'font/woff',woff2:'font/woff2',webp:'image/webp',jpg:'image/jpeg',jpeg:'image/jpeg'};
+createServer(async(req,res)=>{try{let p=new URL(req.url,'http://localhost').pathname.replace(/^\/builds\/[a-zA-Z0-9-]+/,'');if(p==='/api/status'){res.setHeader('Content-Type','application/json');res.end('{"configured":false}');return;}if(p==='/api/assets'){res.setHeader('Content-Type','application/json');res.end('{"assets":[]}');return;}if(p==='/'||p==='')p='/index.html';if(p.includes('..')||!/^\/[a-zA-Z0-9_./@ -]+$/.test(p))throw Error();const data=await readFile('/build'+p);res.setHeader('Content-Type',types[p.split('.').pop()]||'application/octet-stream');res.end(data);}catch{res.statusCode=404;res.end('Not found');}}).listen(4173,'127.0.0.1');
