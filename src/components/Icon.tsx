@@ -1,5 +1,10 @@
 import type { CSSProperties } from 'react';
 const paths = {
+  image: 'M3 4h18v16H3V4Zm0 12 5-5 5 5 3-3 5 5M16 8h.01',
+  time: 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM12 6v6l4 2',
+  panel: 'M3 4h18v16H3V4Zm5 0v16',
+  plus: 'M12 4v16M4 12h16',
+  down: 'm6 9 6 6 6-6',
   chat: 'M4 4h16v12H9l-5 4V4Z',
   edit: 'm15 4 5 5M4 20l5-1L21 7l-5-5L4 14v6Z',
   games: 'M7 8h10l4 10-3 2-4-4h-4l-4 4-3-2L7 8Zm1 2v5m-2-2h5m5-1h.01m2 3h.01',
