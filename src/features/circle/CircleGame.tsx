@@ -7,10 +7,14 @@ import { claimResetSafely, isScore, readRecord, writeRecord } from '../../lib/re
 import { playSound } from '../../lib/sound';
 import Icon from '../../components/Icon';
 import './circle.css';
+import ArtworkSettings from '../studio/ArtworkSettings';
+import { useArtLibrary } from '../../lib/appearance';
+import type { CSSProperties } from 'react';
 
 type Phase = 'idle' | 'reveal' | 'draw' | 'result';
 type Reward = 'earned' | 'claimed' | 'unavailable' | null;
 export default function CircleGame({ mode, muted }: { mode: GameMode; muted: boolean }) {
+  const { selected: world } = useArtLibrary('environment');
   const [phase, setPhase] = useState<Phase>('idle');
   const [seed, setSeed] = useState(() => mode === 'daily' ? dailySeed() : crypto.randomUUID());
   const [target, setTarget] = useState(() => circleTarget(seed));
@@ -94,10 +98,11 @@ export default function CircleGame({ mode, muted }: { mode: GameMode; muted: boo
   const blessed = score !== null && score.total >= 95;
   return <section className="game-surface circle-game">
     <div className="game-heading"><div><h1>Draw Me a Yellow Circle</h1><p>A tiny test of memory. A chance of divine intervention.</p></div><span className="game-glyph gold"><Icon name="circle"/></span></div>
+    <ArtworkSettings kind="environment" disabled={phase === 'reveal' || phase === 'draw'}/>
     <div className="circle-layout">
       <div className="circle-play">
         <div className="circle-stage-label" aria-live="polite"><span>{phase === 'idle' ? 'A simple request' : phase === 'reveal' ? 'Remember this circle' : phase === 'draw' ? 'Now, draw it from memory' : 'The moment of truth'}</span>{phase === 'reveal' && <b>{countdown}</b>}</div>
-        <div className={`retro-room ${blessed ? 'blessed' : ''}`} role="group" aria-label="Pixel-art wood room with a seated man watching a large screen">
+        <div className={`retro-room ${blessed ? 'blessed' : ''}`} style={{ '--environment-image': `url("${world.url}")` } as CSSProperties} role="group" aria-label={`${world.name}, with a seated man, briefcase and a large screen`}>
         <div className={`circle-canvas ${blessed ? 'is-blessed' : ''}`}>
           <svg ref={stage} className="drawing-surface" viewBox="0 0 1000 1000" tabIndex={0} role="application" aria-label="Circle drawing area" aria-describedby="circle-keyboard" onKeyDown={keyboard} onPointerDown={event => {
             if (phase !== 'draw' || !event.isPrimary || event.button !== 0 || activePointer.current !== null) return;

@@ -9,7 +9,6 @@ import './typing.css';
 
 type Phase = 'idle' | 'armed' | 'running' | 'finished';
 type Result = ReturnType<typeof typingMetrics> & { seconds: number; reason: string; expected: string | null; received: string | null };
-const printable = (character: string | null) => character === ' ' ? 'a space' : character === '\n' ? 'a line break' : character;
 
 export default function TypingGame({ mode, muted }: { mode: GameMode; muted: boolean }) {
   const [seed, setSeed] = useState(() => mode === 'daily' ? dailySeed() : crypto.randomUUID());
@@ -22,6 +21,9 @@ export default function TypingGame({ mode, muted }: { mode: GameMode; muted: boo
   const [hint, setHint] = useState('');
   const [saved, setSaved] = useState(true);
   const input = useRef<HTMLTextAreaElement>(null);
+  const surface = useRef<HTMLElement>(null);
+  const startShortcutHeld = useRef(false);
+  const startRef = useRef<() => void>(() => {});
   const prefix = useRef('');
   const started = useRef<number | null>(null);
   const finished = useRef(false);
@@ -43,7 +45,7 @@ export default function TypingGame({ mode, muted }: { mode: GameMode; muted: boo
     setSaved(metrics.correct > 0 ? saveTypingRecord(recordKey, metrics) : true);
     if (received !== null) playSound('fail', muted);
   }
-  useEffect(() => { finishRef.current = finish; });
+  useEffect(() => { finishRef.current = finish; startRef.current = start; });
   useEffect(() => {
     const tick = setInterval(() => {
       if (started.current !== null && !finished.current) {
@@ -78,25 +80,51 @@ export default function TypingGame({ mode, muted }: { mode: GameMode; muted: boo
   }
   const remaining = Math.max(0, limit - Math.floor(elapsed / 1000));
   const active = phase === 'armed' || phase === 'running';
+  useEffect(() => {
+    const isSpace = (event: globalThis.KeyboardEvent) => event.code === 'Space' || event.key === ' ';
+    const onKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.defaultPrevented || event.isComposing) return;
+      const target = event.target;
+      if (target instanceof HTMLElement && target !== input.current) {
+        if (target.closest('input, textarea, select, button, a, [contenteditable="true"], [role="button"], [role="dialog"]')) return;
+        if (!surface.current?.contains(target) && target !== document.body && !target.matches('main')) return;
+      }
+      if (isSpace(event) && startShortcutHeld.current) { event.preventDefault(); return; }
+      if (event.repeat) return;
+      if (isSpace(event) && !active && !event.metaKey && !event.ctrlKey && !event.altKey) {
+        event.preventDefault(); startShortcutHeld.current = true; startRef.current();
+      } else if (event.key === 'Escape' && !event.metaKey && !event.ctrlKey && !event.altKey) {
+        event.preventDefault(); startRef.current();
+      } else if (event.key === 'Enter' && (event.metaKey || event.ctrlKey) && phase === 'running') {
+        event.preventDefault(); finishRef.current('Run banked. Nicely done.');
+      }
+    };
+    const onKeyUp = (event: globalThis.KeyboardEvent) => { if (isSpace(event)) startShortcutHeld.current = false; };
+    const onBlur = () => { startShortcutHeld.current = false; };
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+    window.addEventListener('blur', onBlur);
+    return () => { window.removeEventListener('keydown', onKeyDown); window.removeEventListener('keyup', onKeyUp); window.removeEventListener('blur', onBlur); };
+  }, [active, phase]);
   const metrics = typingMetrics(passage.slice(0, correct), elapsed);
   const lookBehind = Math.max(0, correct - 18);
-  return <section className="game-surface typing-game">
+  return <section ref={surface} className="game-surface typing-game">
     <div className="game-heading"><div><h1>Make No Mistakes</h1><p>One wrong character. Game over. You’ve been warned.</p></div><span className="game-glyph coral"><Icon name="type"/></span></div>
+    {best && <p className="personal-best">Personal best: <b>{best.correct} characters</b> · {best.wpm} WPM</p>}
     <div className="scoreboard"><span><strong>{remaining}s</strong> left</span><span><strong>{correct}</strong> characters</span><span><strong>{metrics.wpm}</strong> WPM</span></div>
     <div className={`typing-stage ${result && result.received !== null ? 'has-mistake' : ''}`}>
       <div className="typing-inline">
       <div className="typing-passage" aria-hidden="true"><span className="typed">{passage.slice(lookBehind, correct)}</span><mark className={result?.received ? 'fatal-character' : ''}>{passage[correct] ?? ' '}</mark><span>{passage.slice(correct + 1, correct + 240)}</span></div>
       <p className="sr-only" id="typing-prompt">Type exactly: {passage.slice(correct, correct + 240)}</p>
       <label htmlFor="typing-input" className="sr-only">Type the passage</label>
-      <textarea ref={input} id="typing-input" onClick={event => { const field = event.currentTarget; field.setSelectionRange(field.value.length, field.value.length); }} rows={2} disabled={!active} value={draft} onChange={event => { setDraft(event.target.value); if (!composing.current) accept(event.target.value); }} onCompositionStart={() => { composing.current = true; }} onCompositionEnd={event => { composing.current = false; accept(event.currentTarget.value); }} onPaste={event => { event.preventDefault(); setHint('No pasting. This one is all you.'); }} onDrop={event => event.preventDefault()} spellCheck={false} autoCorrect="off" autoComplete="off" autoCapitalize="none" inputMode="text" aria-describedby="typing-prompt typing-rules" />
+      <textarea ref={input} id="typing-input" onClick={event => { const field = event.currentTarget; field.setSelectionRange(field.value.length, field.value.length); }} rows={2} disabled={!active} value={draft} onChange={event => { setDraft(event.target.value); if (!composing.current) accept(event.target.value); }} onCompositionStart={() => { composing.current = true; }} onCompositionEnd={event => { composing.current = false; accept(event.currentTarget.value); }} onPaste={event => { event.preventDefault(); setHint('No pasting. This one is all you.'); }} onDrop={event => event.preventDefault()} spellCheck={false} autoCorrect="off" autoComplete="off" autoCapitalize="none" inputMode="text" aria-describedby="typing-prompt typing-shortcuts" />
       </div>
-      <div className="typing-status"><span aria-hidden="true">{active ? ">" : "·"}</span> {phase === 'armed' ? 'TYPE TO BEGIN' : phase === 'running' ? 'KEEP GOING_' : phase === 'finished' ? 'RUN COMPLETE' : 'READY, PLAYER ONE?'}</div>
+      <div className="typing-status"><span aria-hidden="true">{active ? ">" : "·"}</span> {phase === 'armed' ? 'TYPE TO BEGIN' : phase === 'running' ? 'KEEP GOING_' : phase === 'finished' ? 'SPACE TO TRY AGAIN' : 'SPACE TO START'}</div>
     </div>
-    <p id="typing-rules" className="muted">{mode === 'daily' ? 'Same daily text for everyone · 60 seconds.' : 'Fresh text each run · up to 5 minutes.'} Letters, spaces and punctuation all count. Edits end the run. No pasting.</p>
+    <p id="typing-shortcuts" className="typing-shortcuts"><span><kbd>Esc</kbd> restart</span><span><kbd>⌘ / Ctrl</kbd> + <kbd>Enter</kbd> finish</span></p>
     {hint && <p role="status" className="inline-notice">{hint}</p>}
-    {!active && !result && <button className="primary game-start" onClick={start}>Start typing <Icon name="chevron"/></button>}
+    {!active && !result && <button className="primary game-start" onClick={start}>Start typing <kbd>Space</kbd></button>}
     {active && <button className="secondary game-start" disabled={phase === 'armed'} onClick={() => finish('Run banked. Nicely done.')}>Finish run</button>}
-    {result && <div className={`result ${result.received ? 'failure' : ''}`} role="status"><h2>{result.reason}</h2><div className="result-metrics"><span><strong>{result.correct}</strong> correct characters</span><span><strong>{result.words}</strong> completed words</span><span><strong>{result.wpm}</strong> WPM</span></div>{result.received !== null && <p>Expected <b>{printable(result.expected)}</b>, got <b>{printable(result.received)}</b>.</p>}<p className="muted">{result.seconds}s played · {saved ? 'Best score saved on this device.' : 'Browser storage is unavailable; this result was not saved.'}</p><button className="primary" onClick={start}>Another run <Icon name="reset"/></button></div>}
-    {best && <p className="personal-best">Personal best: <b>{best.correct} characters</b> · {best.wpm} WPM</p>}
+    {result && <div className={`result ${result.received ? 'failure' : ''}`} role="status"><h2>{result.reason}</h2><div className="result-metrics"><span><strong>{result.correct}</strong> correct characters</span><span><strong>{result.words}</strong> completed words</span><span><strong>{result.wpm}</strong> WPM</span></div><p className="muted">{result.seconds}s played · {saved ? 'Best score saved on this device.' : 'Browser storage is unavailable; this result was not saved.'}</p><button className="primary" onClick={start}>Another run <kbd>Space</kbd></button></div>}
   </section>;
 }
