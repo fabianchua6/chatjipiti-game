@@ -32,7 +32,7 @@ export default function MemoryGame({ mode, muted, paused = false }: Props) {
     setSeed(mode === 'daily' ? dailySeed() : crypto.randomUUID());
   }
   return <section className="game-surface memory-game">
-    <div className="game-heading"><div><h1>You’re Absolutely Right!</h1><p>Match every pair. The blank card is a little unhelpful.</p></div><span className="badge">{size} × {size}</span></div>
+    <div className="game-heading"><div><h1>You’re Absolutely Right!</h1></div><span className="badge">{size} × {size}</span></div>
     <ArtworkSettings kind="cards"/>
     <MemoryBoard paused={paused} muted={muted} pack={selected} key={`${level}-${attempt}-${seed}`} size={size} seed={`${seed}:${size}`} mode={mode} onNext={level < 3 ? nextLevel : undefined} onRestart={restart} />
   </section>;
