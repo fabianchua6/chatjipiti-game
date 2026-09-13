@@ -18,7 +18,7 @@ npm test
 npm run build
 ```
 
-Static production output is `dist/`. Fonts and game artwork are bundled locally. Hosting is not configured yet.
+Static production output is `dist/`. Fonts and game artwork are bundled locally. A private ChatGPT Sites deployment is configured; see [hosting and releases](docs/HOSTING.md).
 
 ## Demo flow
 
