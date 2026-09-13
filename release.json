@@ -1,1 +1,6 @@
-{"buildId": "bootstrap-upstream", "sourceSha": "23f1e463a9ed0826c6b250ffc39b07e5c0aeae5a"}
+{
+  "buildId": "manual-20260913-024031d7a1",
+  "sourceSha": "024031d7a18cca5ff680419f746a35e376cd4942",
+  "game": "all",
+  "releasedAt": "2026-09-13T07:27:27.107536+00:00"
+}
