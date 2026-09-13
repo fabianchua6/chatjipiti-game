@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { cardPackSelection, isRetiredCardPack } from './cardPackMigration';
 
 export type ArtKind = 'environment' | 'cards';
 export type ArtAsset = { id: string; kind: ArtKind; name: string; url: string; model?: string; createdAt?: string };
@@ -8,12 +9,14 @@ export const environments: ArtAsset[] = [
   { id: 'moon', kind: 'environment', name: 'Moon base', url: '/environments/moon.png' },
 ];
 export const cardPacks: ArtAsset[] = [
-  { id: 'agents', kind: 'cards', name: 'Agent originals', url: '' },
-  { id: 'prism', kind: 'cards', name: 'Prism collection', url: '' },
+  { id: 'agents', kind: 'cards', name: 'Agent Originals', url: '' },
+  { id: 'pets', kind: 'cards', name: 'ChatGPT Pets', url: '' },
+  { id: 'zootopia', kind: 'cards', name: 'Zootopia', url: '/card-packs/zootopia.png' },
 ];
 const eventName = 'chatjipiti:appearance';
 const key = (kind: ArtKind) => `chatjipiti:art:${kind}`;
 export function selectArt(asset: ArtAsset) {
+  if (isRetiredCardPack(asset)) asset = cardPacks.find(pack => pack.id === 'pets')!;
   try { localStorage.setItem(key(asset.kind), asset.id); } catch { /* Selection still updates this visit. */ }
   window.dispatchEvent(new CustomEvent(eventName, { detail: asset }));
 }
@@ -28,14 +31,14 @@ export async function apiRequest<T>(url: string, body?: object, signal?: AbortSi
 export function useArtLibrary(kind: ArtKind) {
   const defaults = kind === 'environment' ? environments : cardPacks;
   const [assets, setAssets] = useState<ArtAsset[]>(defaults);
-  const [selectedId, setSelectedId] = useState(() => { try { return localStorage.getItem(key(kind)) || defaults[0].id; } catch { return defaults[0].id; } });
+  const [selectedId, setSelectedId] = useState(() => { try { return (kind === 'cards' ? cardPackSelection(localStorage.getItem(key(kind)) || defaults[0].id) : localStorage.getItem(key(kind)) || defaults[0].id); } catch { return defaults[0].id; } });
   useEffect(() => {
     const controller = new AbortController();
-    const refresh = () => { void apiRequest<{ assets: ArtAsset[] }>('/api/assets', undefined, controller.signal).then(data => setAssets([...defaults, ...data.assets.filter(asset => asset.kind === kind)])).catch(() => {}); };
+    const refresh = () => { void apiRequest<{ assets: ArtAsset[] }>('/api/assets', undefined, controller.signal).then(data => setAssets([...defaults, ...data.assets.filter(asset => asset.kind === kind && !isRetiredCardPack(asset))])).catch(() => {}); };
     const change = (event: Event) => {
       const detail = (event as CustomEvent<ArtAsset>).detail;
       if (detail?.kind === kind) { setSelectedId(detail.id); refresh(); }
-      else if (event.type === 'storage') { try { setSelectedId(localStorage.getItem(key(kind)) || defaults[0].id); } catch { /* Keep session selection. */ } }
+      else if (event.type === 'storage') { try { setSelectedId((kind === 'cards' ? cardPackSelection(localStorage.getItem(key(kind)) || defaults[0].id) : localStorage.getItem(key(kind)) || defaults[0].id)); } catch { /* Keep session selection. */ } }
     };
     refresh(); window.addEventListener(eventName, change); window.addEventListener('storage', change); window.addEventListener('chatjipiti:asset-created', refresh);
     return () => { controller.abort(); window.removeEventListener(eventName, change); window.removeEventListener('storage', change); window.removeEventListener('chatjipiti:asset-created', refresh); };

@@ -1,6 +1,6 @@
 # Artwork provenance
 
-All artwork in this prototype is local and original or generated for this project. The built-in image generator’s underlying model is not recorded in the asset files. The optional local API names its runtime models in `server/api.ts`: `gpt-image-2.5-sunburst` for images and `gpt-6-astra` for agent runs. Live API behavior is parked and has not been verified.
+Artwork is bundled locally. Pet sprites come from the installed ChatGPT app; other assets are supplied, authored, or generated for this prototype. The built-in image generator’s underlying model is not recorded in the asset files. The optional local API names its runtime models in `server/api.ts`: `gpt-image-2.5-sunburst` for images and `gpt-6-astra` for agent runs. Live API behavior is parked and has not been verified.
 
 ## Pope Tibo sprite sheet
 
@@ -50,3 +50,22 @@ Sea Glass Agents was created through the in-game card settings on 2026-09-13 usi
 User-facing prompt: “Small softly rounded geometric agent emblems made from translucent sea glass. Eighteen visibly different silhouettes: folded cyan hourglass, coral petal cross, lavender diamond stack, mint cube flower, gold orbit, indigo star prism, and twelve equally distinct original abstract shapes. Quiet charcoal background, subtle dimensional lighting, clean bold silhouettes.” The server prepends the strict 6-column, 3-row atlas layout constraints.
 
 Coral Observatory was generated through the local environment-edit API using `gpt-image-2.5-sunburst`, with the classic room as its reference. The resulting 1536x1024 image retains the large blank board, chair, seated man and handled briefcase. Prompt: “An underwater research station in a turquoise reef. Keep the exact large blank board, seated elderly man, lounge chair and upright handled briefcase in their same positions. Give him a vintage navy explorer jacket. Beyond the board are glass walls with coral, softly lit fish and shafts of ocean light. Crisp retro pixel art and warm interior lighting.”
+
+
+## Three card packs
+
+The built-in picker contains **Agent Originals**, **ChatGPT Pets**, and **Zootopia**. Prism and the former generated Sea Glass Agents entry are retired from the picker; their saved selections map to Pets. The historical generated files are retained locally.
+
+### ChatGPT Pets
+
+Nine unchanged sprite sheets were sourced from the installed ChatGPT app's `webview/assets/codex-pet-assets-16127cbc3056.js` registry on 2026-09-13: Codex, Dewey, Fireball, Hoots, Seedy, Rocky, Stacky, BSOD, and Null Signal. Original asset filenames and SHA-256 checksums are recorded in `public/card-packs/pets/provenance.json`. Each is a 1536×2288 WebP with 192×208 cells in an 8×11 atlas. CSS plays six idle frames and honors paused games and reduced motion. Images are not repainted or presented as our original artwork.
+
+The public [OpenAI pet catalog](https://github.com/openai/codex/blob/main/codex-rs/tui/src/pets/catalog.rs) and [pet model mapping](https://github.com/openai/codex/blob/main/codex-rs/tui/src/pets/model.rs) provide additional references. The installed app includes a newer Hoots sheet and extended rows beyond the public v4 set.
+
+Nine ordinary pets and nine visibly starred variants provide 18 distinguishable card faces. The gold stars and circular accent are project-authored SVG/CSS; no names are printed on the cards. Accessible names distinguish starred variants.
+
+### Zootopia-inspired original cast
+
+`public/card-packs/zootopia.png` is a 1536×1024 image generated with the built-in image generator on 2026-09-13. It contains 18 original animal-city residents in six columns and three rows. It is explicitly labeled **Original cast · Zootopia-inspired** in the picker; it does not depict the official movie cast. The built-in generator rejected the exact-cast requests, so the usable sheet uses original designs. Its exact underlying model is not recorded by the tool.
+
+Art brief: Friendly toy-like 3D animal citizens on charcoal; rabbit courier, fox mechanic, buffalo barista, cheetah DJ, sloth botanist, gazelle architect, fennec astronomer, sheep florist, lion chef, weasel skateboarder, yak knitwear artist, shrew violinist, snake scholar, beaver carpenter, lynx pilot, horse gardener, otter lifeguard, and fox librarian. Consistent scale, each character centered in its own cell, no lettering or card borders. The final bitmap is copied without editing.
