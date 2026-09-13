@@ -1,0 +1,30 @@
+name: Hearth studio cloud runner
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '2-57/5 * * * *'
+permissions:
+  contents: write
+concurrency:
+  group: hearth-studio
+  cancel-in-progress: false
+jobs:
+  studio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Build, verify and release queued mission
+        run: node scripts/hearth/runner.mjs
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          HEARTH_RUNNER_SECRET: ${{ secrets.HEARTH_RUNNER_SECRET }}
+          HEARTH_SITE_BEARER: ${{ secrets.HEARTH_SITE_BEARER }}
+          STUDIO_SITE_BEARER: ${{ secrets.STUDIO_SITE_BEARER }}
+          GH_TOKEN: ${{ github.token }}
