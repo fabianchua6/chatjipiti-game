@@ -36,9 +36,9 @@ npm run build
 ## Demo flow
 
 1. Open New chat, enter a prompt or use a suggestion.
-2. The mock agent thinks and offers **Fancy a game?**
-3. Open **ChatJiPiTi Game** from that invitation or the sidebar.
-4. Play memory matching, strict typing or the yellow-circle challenge.
+2. Sending the prompt starts the mock task and opens **Fancy a game?**, a popup with all three games.
+3. Choose a game to launch it immediately, or stay in chat. Escape and clicking outside also dismiss the popup.
+4. Reopen the picker with **Choose a game** at any time; the mock keeps running while you play memory, typing or the yellow-circle challenge.
 5. After 30 seconds the agent announces completion, keeping the game in place.
 6. Score 95+ on the daily circle to see Pope Tibo and bank one simulated reset.
 

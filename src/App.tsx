@@ -8,14 +8,11 @@ import { resetBalance } from './lib/records';
 import type { GameMode } from './lib/challenges';
 import { useAgentTask } from './features/chat/useAgentTask';
 import './shell.css';
+import { games } from './lib/games';
+import GamePicker from './features/chat/GamePicker';
 
 type Page = 'chat' | 'games' | 'memory' | 'typing' | 'circle' | 'profile';
 
-const games = [
-  { id: 'memory', title: 'You’re Absolutely Right!', description: 'Find your matching agents. An exercise in agreeable thinking.', category: 'Memory', icon: 'grid', color: 'purple' },
-  { id: 'typing', title: 'Make No Mistakes', description: 'One wrong character and it’s over. How far can you go?', category: 'Typing', icon: 'type', color: 'coral' },
-  { id: 'circle', title: 'Draw Me a Yellow Circle', description: 'Remember it. Recreate it. Maybe receive a blessing.', category: 'Precision', icon: 'circle', color: 'gold' },
-] as const;
 const suggestions = ['Build me a personal website', 'Plan a weekend in Tokyo', 'Explain why my code works'];
 const validPages: Page[] = ['chat', 'games', 'memory', 'typing', 'circle', 'profile'];
 function currentPage(): Page { const hash = location.hash.slice(1) as Page; return hash === ('studio' as string) ? 'circle' : validPages.includes(hash) ? hash : 'chat'; }
@@ -33,6 +30,7 @@ export default function App() {
   const { run, elapsed, start: startAgent, stop: stopAgent, clear: clearAgent } = useAgentTask();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [drawer, setDrawer] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [mobile, setMobile] = useState(() => matchMedia('(max-width: 800px)').matches);
   const [notice, setNotice] = useState('');
   const [dismissed, setDismissed] = useState(false);
@@ -42,7 +40,7 @@ export default function App() {
   const activeGame = games.find(game => game.id === page);
 
   useEffect(() => {
-    const onHash = () => { setPage(currentPage()); setDrawer(false); };
+    const onHash = () => { const next = currentPage(); setPage(next); setDrawer(false); if (next !== 'chat') setPickerOpen(false); };
     const onWallet = () => setBalance(resetBalance());
     const media = matchMedia('(max-width: 800px)');
     const onResize = () => setMobile(media.matches);
@@ -61,15 +59,15 @@ export default function App() {
   }, [mobile, drawer]);
 
   function navigate(next: Page) {
-    setPage(next); setDrawer(false);
+    setPage(next); setDrawer(false); if (next !== 'chat') setPickerOpen(false);
     if (location.hash !== `#${next}`) location.hash = next;
     if (mobile && drawer) requestAnimationFrame(() => content.current?.focus({ preventScroll: true }));
   }
   function send(prompt = composer) {
     if (!prompt.trim() || run?.status === 'working') return;
-    void startAgent(prompt.trim().slice(0, 1200)); setComposer(''); setDismissed(false); navigate('chat');
+    void startAgent(prompt.trim().slice(0, 1200)); setComposer(''); setDismissed(false); navigate('chat'); setPickerOpen(true);
   }
-  function newChat() { clearAgent(); setComposer(''); setDismissed(false); navigate('chat'); }
+  function newChat() { setPickerOpen(false); clearAgent(); setComposer(''); setDismissed(false); navigate('chat'); }
   function toggleMute() {
     setMuted(value => !value);
     try { localStorage.setItem('chatjipiti:muted', String(!muted)); } catch { /* Session preference still works. */ }
@@ -104,8 +102,8 @@ export default function App() {
       {run && run.status !== 'stopped' && page !== 'chat' && <div className="agent-strip">{agentBusy ? <span className="thinking-dot"/> : <Icon name="check"/>}<span>{agentBusy ? 'Demo agent is working' : 'Your demo is ready'} · {elapsed}s</span><button onClick={() => navigate('chat')}>View chat <Icon name="chevron"/></button></div>}
       <main ref={content} className="content-scroll" tabIndex={-1}>
         {page === 'chat' && <div className={`chat-page ${run ? 'has-conversation' : ''}`}>
-          {!run ? <div className="chat-welcome"><h1>What can I help with?</h1></div> : <div className="conversation"><div className="user-message">{run.prompt}</div><div className="assistant-message"><span className="assistant-avatar"><Icon name="spark"/></span><div><p className="assistant-name">ChatJiPiTi</p>{agentBusy ? <><div className="thinking-label"><span className="thinking-dot"/>{agentPhase}<span>{elapsed}s</span></div><p>I’m on it. This might take a little thinking.</p><div className="game-invitation"><span className="invitation-art"><Icon name="games"/></span><div><h2>Fancy a game?</h2><p>I’ll keep working. You go beat your best.</p><button onClick={() => navigate('games')}>Let’s play <Icon name="chevron"/></button></div></div><p className="mock-note">Simulated agent · ready in about 30 seconds.</p></> : run.status === 'stopped' ? <p>Stopped. Ready when you are.</p> : <><p>Your demo task is ready. Here’s the direction I’d take:</p><ul className="demo-answer"><li>Start with one clear outcome and a small first version.</li><li>Make the main interaction feel good on a phone.</li><li>Test the whole experience, then share what you made.</li></ul><p className="mock-note">Scripted demo response. No model request was made.</p><button className="secondary" onClick={() => navigate('games')}>Back to your games <Icon name="games"/></button></>}</div></div></div>}
-          <div className="composer-area"><form className="composer" onSubmit={event => { event.preventDefault(); send(); }}><label className="sr-only" htmlFor="chat-prompt">Message ChatJiPiTi</label><textarea id="chat-prompt" rows={2} value={composer} onChange={event => setComposer(event.target.value)} placeholder="Ask anything" maxLength={1200} onKeyDown={event => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); send(); } }}/><div className="composer-controls"><div className="composer-tools"><span className="mock-note">Demo chat</span></div>{agentBusy ? <button type="button" className="send-button" aria-label="Stop demo" onClick={() => { void stopAgent(); }}><Icon name="stop"/></button> : <button type="submit" className="send-button" aria-label="Send message" disabled={!composer.trim()}><Icon name="arrow"/></button>}</div></form>{!run && <div className="prompt-suggestions">{suggestions.map(prompt => <button key={prompt} onClick={() => send(prompt)}>{prompt}</button>)}</div>}<p className="composer-note">Independent ChatGPT-style prototype. Account resets are simulated.</p></div>
+          {!run ? <div className="chat-welcome"><h1>What can I help with?</h1></div> : <div className="conversation"><div className="user-message">{run.prompt}</div><div className="assistant-message"><span className="assistant-avatar"><Icon name="spark"/></span><div><p className="assistant-name">ChatJiPiTi</p>{agentBusy ? <><div className="thinking-label"><span className="thinking-dot"/>{agentPhase}<span>{elapsed}s</span></div><p>I’m on it. This might take a little thinking.</p><div className="game-invitation"><span className="invitation-art"><Icon name="games"/></span><div><h2>Fancy a game?</h2><p>I’ll keep working. You go beat your best.</p><button onClick={() => setPickerOpen(true)}>Choose a game <Icon name="chevron"/></button></div></div><p className="mock-note">Simulated agent · ready in about 30 seconds.</p></> : run.status === 'stopped' ? <p>Stopped. Ready when you are.</p> : <><p>Your demo task is ready. Here’s the direction I’d take:</p><ul className="demo-answer"><li>Start with one clear outcome and a small first version.</li><li>Make the main interaction feel good on a phone.</li><li>Test the whole experience, then share what you made.</li></ul><p className="mock-note">Scripted demo response. No model request was made.</p><button className="secondary" onClick={() => setPickerOpen(true)}>Choose a game <Icon name="games"/></button></>}</div></div></div>}
+          <div className="composer-area"><form className="composer" onSubmit={event => { event.preventDefault(); send(); }}><label className="sr-only" htmlFor="chat-prompt">Message ChatJiPiTi</label><textarea id="chat-prompt" rows={2} value={composer} onChange={event => setComposer(event.target.value)} placeholder="Ask anything" maxLength={1200} onKeyDown={event => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); send(); } }}/><div className="composer-controls"><div className="composer-tools"><span className="mock-note">Demo chat</span></div>{agentBusy ? <button type="button" className="send-button" aria-label="Stop demo" onClick={() => { setPickerOpen(false); stopAgent(); }}><Icon name="stop"/></button> : <button type="submit" className="send-button" aria-label="Send message" disabled={!composer.trim()}><Icon name="arrow"/></button>}</div></form>{!run && <div className="prompt-suggestions">{suggestions.map(prompt => <button key={prompt} onClick={() => send(prompt)}>{prompt}</button>)}</div>}<p className="composer-note">Independent ChatGPT-style prototype. Account resets are simulated.</p></div>
         </div>}
         {page === 'games' && <div className="games-page"><div className="arcade-intro"><span className="arcade-symbol"><Icon name="games"/></span><h1>ChatJiPiTi Game</h1><p>Play while your agents work.</p></div><fieldset className="mode-picker"><legend className="sr-only">Choose game mode</legend><label><input type="radio" name="mode" checked={mode === 'daily'} onChange={() => setMode('daily')}/>Daily Challenge</label><label><input type="radio" name="mode" checked={mode === 'practice'} onChange={() => setMode('practice')}/>Free Play</label></fieldset><p className="mode-note">{mode === 'daily' ? 'Same challenges for everyone. Your best scores stay on this device.' : 'Fresh challenges. Unlimited attempts. No pressure. Well, a little.'}</p><div className="game-list">{games.map(game => <button className={`game-entry ${game.color}`} key={game.id} onClick={() => navigate(game.id)}><div className={`game-art art-${game.id}`} aria-hidden="true">{game.id === 'memory' ? <div className="mini-board">{Array.from({ length: 9 }, (_, i) => <i key={i}/>)}</div> : game.id === 'typing' ? <span>Aa<span>_</span></span> : <div className="yellow-circle"/>}</div><div className="game-copy"><h2>{game.title}</h2><p>{game.description}</p><span>{game.category} <i/> {game.id === 'typing' ? mode === 'daily' ? '60 seconds' : 'Up to 5 minutes' : game.id === 'memory' ? '4 boards' : 'One perfect circle'}</span></div><Icon name="chevron"/></button>)}</div><div className="arcade-footnote"><Icon name="reset"/><p>Draw a 95+ daily circle to bank a simulated Astra reset.<br/><span>A blessing from Pope Tibo. Strictly for the demo.</span></p></div></div>}
         {activeGame && <div className="game-page"><div className="game-toolbar"><button className="text-button" onClick={() => navigate('games')}><Icon name="back"/>All games</button><span>{mode === 'daily' ? 'Daily Challenge' : 'Free Play'}</span></div>{page === 'memory' && <MemoryGame key={mode} mode={mode} muted={muted}/>}{page === 'typing' && <TypingGame key={mode} mode={mode} muted={muted}/>}{page === 'circle' && <CircleGame key={mode} mode={mode} muted={muted}/>}</div>}
@@ -113,5 +111,6 @@ export default function App() {
       </main>
       {run?.status === 'complete' && page !== 'chat' && !dismissed && <div className="completion-toast" role="status"><Icon name="check"/><div><b>Your agent is ready.</b><span>Finish your game. No rush.</span></div><button onClick={() => navigate('chat')}>View chat</button><button className="icon-button" aria-label="Dismiss agent completion" onClick={() => setDismissed(true)}><Icon name="close"/></button></div>}
     </div>
+    <GamePicker open={pickerOpen && page === 'chat'} working={agentBusy} onDismiss={() => { setPickerOpen(false); requestAnimationFrame(() => document.getElementById('chat-prompt')?.focus()); }} onChoose={game => { setPickerOpen(false); navigate(game); requestAnimationFrame(() => content.current?.focus({preventScroll:true})); }}/>
   </div>;
 }

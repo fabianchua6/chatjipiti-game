@@ -40,3 +40,12 @@ Tests cover paired-board counts/blanks, deterministic dates, ranking, corrupt/un
 
 - Final mock chat completed after 30 seconds while the circle page stayed open. Its response clearly says no model request was made; the verification tab reported no browser console errors.
 - React Doctor: no errors; remaining warnings concern component complexity, small board-array lookups, stable position keys, and guarded effect-based image polling.
+
+## Prompt-to-game demo flow
+
+- Sending a typed prompt, pressing Enter, or using a suggestion starts one mock task and opens the three-game popup. Follow-up prompts after completion open a fresh picker.
+- A game selection closes the popup and launches the selected game directly; the mock continues without restarting.
+- Escape, close, backdrop click and “I’ll stay in chat” dismiss to the composer. The invitation can reopen the picker.
+- If the mock completes while the picker is open, the copy changes to response-ready and the choices remain available.
+- Desktop and 390px phone layouts, typed submission, follow-up submission, direct Memory launch, Escape/backdrop dismissal and composer focus restoration were verified in the browser. No console errors appeared.
+- Independent review found no material flow regressions. Native dialog focus/inert behavior supplies the keyboard modal boundary; its backdrop pointer handler also has keyboard dismissal through Escape.
