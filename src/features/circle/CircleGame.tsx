@@ -1,3 +1,4 @@
+import { markPlayed } from '../../lib/playedToday';
 import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent, PointerEvent } from 'react';
 import { dailySeed } from '../../lib/game';
@@ -44,6 +45,7 @@ export default function CircleGame({ mode, muted }: { mode: GameMode; muted: boo
   }, [phase]);
 
   function start() {
+    markPlayed('circle');
     attempt.current++;
     const nextSeed = mode === 'daily' ? dailySeed() : crypto.randomUUID();
     setSeed(nextSeed); setTarget(circleTarget(nextSeed));

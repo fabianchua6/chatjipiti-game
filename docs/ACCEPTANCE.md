@@ -43,9 +43,13 @@ Tests cover paired-board counts/blanks, deterministic dates, ranking, corrupt/un
 
 ## Prompt-to-game demo flow
 
-- Sending a typed prompt, pressing Enter, or using a suggestion starts one mock task and opens the three-game popup. Follow-up prompts after completion open a fresh picker.
-- A game selection closes the popup and launches the selected game directly; the mock continues without restarting.
-- Escape, close, backdrop click and “I’ll stay in chat” dismiss to the composer. The invitation can reopen the picker.
-- If the mock completes while the picker is open, the copy changes to response-ready and the choices remain available.
-- Desktop and 390px phone layouts, typed submission, follow-up submission, direct Memory launch, Escape/backdrop dismissal and composer focus restoration were verified in the browser. No console errors appeared.
-- Independent review found no material flow regressions. Native dialog focus/inert behavior supplies the keyboard modal boundary; its backdrop pointer handler also has keyboard dismissal through Escape.
+- Sending a typed prompt, pressing Enter, or using a suggestion starts one mock task and shows unplayed games inline. Follow-up prompts keep the same played-today state.
+- One click launches the selected daily game directly; the mock continues without restarting. No popup or extra chooser step appears.
+- Starting actual play records the game for the UTC day, in either mode. Merely visiting a route does not. Valid older daily scores also count.
+- Played games remain available as compact replay links and through the sidebar. The list refreshes at UTC midnight and after play in another tab.
+- Blocked storage retains play history for the current visit without interrupting a game. Invalid records are ignored.
+- Memory celebrates the first pair with “YOU’RE ABSOLUTELY RIGHT”, then changes AI clichés on consecutive matches. A blank or mismatch resets the streak.
+
+- Verified locally: desktop and 390px inline choices, keyboard launch, route-only visits remaining unplayed, first flip moving Memory to Replay, and 30-second completion preserving the flow.
+- Verified consecutive Memory matches show the original phrase, “GREAT QUESTION”, and “LET’S DELVE DEEPER”; revealing a blank restores the original phrase for the next match. No browser console errors were observed.
+- Updated committed suite: 22 tests pass; production build passes. React Doctor reports no errors and nine existing warnings; its remote score was unavailable.
