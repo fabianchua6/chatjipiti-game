@@ -1,0 +1,21 @@
+.chat-games {margin-top:24px;max-width:540px}
+.chat-games h2 {font-size:16px;font-weight:500;line-height:1.5;margin-bottom:10px}
+.chat-game-options {display:grid}
+.chat-game-option {display:flex;align-items:center;gap:13px;min-width:0;min-height:68px;width:100%;padding:12px 8px;border-radius:10px;background:transparent;text-align:left;color:#ececec;transition:background-color 150ms}
+.chat-game-option+.chat-game-option {border-top:1px solid #ffffff10}
+.chat-game-option:hover,.chat-game-replays button:hover {background:#ffffff0b}
+.chat-game-option:active,.chat-game-replays button:active {background:#ffffff12}
+.chat-game-option>.icon {width:22px;height:22px;flex-shrink:0;color:#d1b5fb}
+.chat-game-option.coral>.icon {color:#ffb4a2}
+.chat-game-option.gold>.icon {color:#ffdb69}
+.chat-game-option>span:nth-child(2) {display:grid;gap:2px;flex:1;min-width:0}
+.chat-game-option strong {font-size:14px;line-height:1.4;font-weight:500}
+.chat-game-option small {font-size:12px;line-height:1.5;color:#aaa}
+.chat-game-action,.chat-game-replays button>span:last-child {display:flex;align-items:center;gap:3px;font-size:12px;color:#bcbcbc;flex-shrink:0}
+.chat-game-action>.icon,.chat-game-replays button .icon {width:14px;height:14px}
+.chat-game-replays {margin-top:16px}
+.chat-game-replays>p {font-size:12px;color:#a5a5a5;margin-bottom:4px}
+.chat-game-replays button {display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;width:100%;padding:8px;border-radius:8px;background:transparent;color:#c9c9c9;font-size:13px;line-height:1.4;text-align:left;transition:background-color 150ms}
+.chat-games button:focus-visible {outline:2px solid #ddd;outline-offset:2px}
+@media(max-width:480px) {.chat-game-option {gap:10px;padding-inline:4px}.chat-game-option strong {font-size:13px}.chat-game-action {font-size:11px}.chat-game-replays button {padding-inline:4px;font-size:12px}}
+@media(prefers-reduced-motion:reduce) {.chat-games button {transition:none}}

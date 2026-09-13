@@ -1,3 +1,4 @@
+import { markPlayed } from '../../lib/playedToday';
 import { useEffect, useRef, useState } from 'react';
 import { dailySeed } from '../../lib/game';
 import { compareTyping, typingMetrics, typingPassage } from '../../lib/challenges';
@@ -70,6 +71,7 @@ export default function TypingGame({ mode, muted }: { mode: GameMode; muted: boo
     if (started.current !== null && performance.now() - started.current >= limit * 1000) { finish('Time’s up. Clean run.'); return; }
     if (next === prefix.current) return;
     if (started.current === null) {
+      markPlayed('typing');
       started.current = performance.now(); setPhase('running');
       deadline.current = setTimeout(() => finishRef.current('Time’s up. Clean run.'), limit * 1000);
     }

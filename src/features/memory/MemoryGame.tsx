@@ -1,3 +1,5 @@
+import { getMatchPhrase } from '../../lib/matchPhrases';
+import { markPlayed } from '../../lib/playedToday';
 import { useEffect, useRef, useState } from 'react';
 import { BOARD_SIZES, dailySeed, makeBoard, readBest, saveBest } from '../../lib/game';
 import type { BoardSize, MemoryResult } from '../../lib/game';
@@ -56,7 +58,7 @@ function MemoryBoard({ size, seed, mode, onNext, onRestart, muted, pack }: { mut
 
   function flip(index: number) {
     if (result || open.length === 2 || open.includes(index) || matched.includes(index) || timer.current) return;
-    if (started.current === null) started.current = performance.now();
+    if (started.current === null) { markPlayed('memory'); started.current = performance.now(); }
     const next = [...open, index];
     setOpen(next);
     if (board[index] === null) {
@@ -73,8 +75,9 @@ function MemoryBoard({ size, seed, mode, onNext, onRestart, muted, pack }: { mut
     if (board[next[0]] === board[next[1]]) {
       timer.current = setTimeout(() => {
         const pairs = [...matched, ...next];
-        setMatched(pairs); setOpen([]); setNotice('You’re absolutely right! Pair matched.');
+        setMatched(pairs); setOpen([]);
         combo.current += 1;
+        setNotice(`${getMatchPhrase(combo.current).announcement} ${combo.current > 1 ? `${combo.current} pairs in a row.` : 'Pair matched.'}`);
         setCelebration({ sequence: totalMoves, combo: combo.current });
         clearTimeout(celebrationTimer.current);
         celebrationTimer.current = setTimeout(() => setCelebration(null), 1700);

@@ -38,19 +38,19 @@ Static production output is `dist/`. Fonts and game artwork are bundled locally.
 ## Demo flow
 
 1. Open New chat, enter a prompt or use a suggestion.
-2. The mock agent thinks and offers **Fancy a game?**
-3. Open **ChatJiPiTi Game** from that invitation or the sidebar.
-4. Play memory matching, strict typing or the yellow-circle challenge.
+2. Sending the prompt starts the mock task and shows unplayed games directly in the chat.
+3. Click a game to launch its daily challenge immediately. There is no picker popup or extra confirmation.
+4. Games you have tried today appear as compact replay links; Daily and Free Play both count. The mock keeps running while you play.
 5. After 30 seconds the agent announces completion, keeping the game in place.
 6. Score 95+ on the daily circle to see Pope Tibo and bank one simulated reset.
 
 ## Games
 
-- **You’re Absolutely Right!** — 3×3 to 6×6 memory boards; fixed Astra poster backs and 24 authored SVG geometric faces; one unmatchable blank on odd boards; smooth flips, matched-pair celebration, time and moves. Appearance choices and optional generation live in a small collapsible settings panel inside the game.
+- **You’re Absolutely Right!** — 3×3 to 6×6 memory boards; fixed Astra poster backs and 24 authored SVG geometric faces; one unmatchable blank on odd boards; smooth flips, cosmic matched-pair celebrations with escalating AI clichés on a streak, time and moves. Appearance choices and optional generation live in a small collapsible settings panel inside the game.
 - **Make No Mistakes** — inline pixel-text input; one wrong character ends the run; Daily 60s / Free Play 300s; seeded progressive phrases; local character/WPM records; IME-aware committed input; paste blocked.
 - **Draw Me a Yellow Circle** — three-second target reveal, press-centre/drag-radius/release submission, position and size scoring; mouse, touch and keyboard; retro wood-room stage, generated Pope Tibo parody and daily reward wallet. Classic, Forest and Moon environments are selectable from the in-game settings panel.
 
-Daily mode is repeatable. Challenges use UTC dates. Scores and mock rewards stay on this browser. Clearing browser data clears them. There are no global rankings.
+Daily mode is repeatable. Challenges use UTC dates. Scores and mock rewards stay on this browser. The chat’s played-today list also resets at midnight UTC. Clearing browser data clears stored scores and play history. There are no global rankings.
 
 ## Structure
 
