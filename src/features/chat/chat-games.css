@@ -5,20 +5,20 @@
 .chat-games-invitation .icon:last-child {width:14px;height:14px;transition:transform 150ms}
 .chat-games-invitation[aria-expanded="true"] .icon:last-child {transform:rotate(180deg)}
 .chat-game-options[hidden] {display:none}
-.chat-game-options {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
-.chat-game-card {--game-accent:#d1b5fb;--game-tint:#d1b5fb16;display:flex;align-items:center;gap:10px;min-width:0;min-height:80px;padding:14px;border:1px solid #414141;border-radius:24px;background:#2b2b2b;color:#ececec;text-align:left;transition:background-color 150ms,border-color 150ms,transform 150ms}
+.chat-game-options {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.chat-game-card {--game-accent:#d1b5fb;--game-tint:#d1b5fb16;display:flex;align-items:center;gap:8px;min-width:0;min-height:60px;padding:10px 12px;border:1px solid #414141;border-radius:18px;background:#2b2b2b;color:#ececec;text-align:left;transition:background-color 150ms,border-color 150ms,transform 150ms}
 .chat-game-card.coral {--game-accent:#ffb4a2;--game-tint:#ffb4a216}
 .chat-game-card.gold {--game-accent:#ffdb69;--game-tint:#ffdb6916}
-.chat-game-emblem {display:grid;place-items:center;flex-shrink:0;width:32px;height:32px;background:var(--game-tint);border-radius:50%;color:var(--game-accent)}
-.chat-game-emblem>.icon {width:20px;height:20px;stroke-width:1.8}
-.chat-game-card strong {font-size:13px;font-weight:500;line-height:1.45;overflow-wrap:anywhere}
+.chat-game-emblem {display:grid;place-items:center;flex-shrink:0;width:28px;height:28px;background:var(--game-tint);border-radius:50%;color:var(--game-accent)}
+.chat-game-emblem>.icon {width:18px;height:18px;stroke-width:1.8}
+.chat-game-card strong {font-size:13px;font-weight:500;line-height:1.35;overflow-wrap:anywhere}
 .chat-game-card:hover {border-color:#6c6c6c;background:#343434;transform:translateY(-2px)}
 .chat-game-card:active {background:#3c3c3c;transform:scale(.98)}
 .chat-games button:focus-visible {outline:2px solid #ddd;outline-offset:3px}
 @media(max-width:600px) {
-  .chat-game-options {grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  .chat-game-card {min-height:80px;padding:12px;gap:8px;border-radius:20px}
+  .chat-game-options {grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .chat-game-card {min-height:56px;padding:8px 10px;gap:6px;border-radius:16px}
   .chat-game-card strong {font-size:12px}
-  .chat-game-card:last-child:nth-child(odd) {grid-column:1/-1;min-height:64px}
+  .chat-game-card:last-child:nth-child(odd) {grid-column:1/-1;min-height:48px}
 }
 @media(prefers-reduced-motion:reduce) {.chat-game-card,.chat-games-invitation,.chat-games-invitation .icon:last-child {transition:none}.chat-game-card:hover,.chat-game-card:active {transform:none}}

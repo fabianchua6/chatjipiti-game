@@ -1,0 +1,24 @@
+.create-game-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 100%;
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 10px 16px;
+  border: 1px dashed #737373;
+  border-radius: 999px;
+  background: transparent;
+  color: #d4d4d4;
+  font-size: .875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: background-color 150ms, border-color 150ms, color 150ms;
+}
+.create-game-link > .icon { width: 16px; height: 16px; }
+.create-game-link:hover { border-color: #aaa; background: #ffffff0b; color: #fff; }
+.create-game-link:active { background: #ffffff14; }
+.create-game-link:focus-visible { outline: 2px solid #d1b5fb; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .create-game-link { transition: none; } }
