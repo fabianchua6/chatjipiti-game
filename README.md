@@ -1,57 +1,53 @@
-# ChatJiPiTi Games
+# ChatJiPiTi Game
 
-**Play while your agents work.** A mobile-first hackathon arcade for Fabian and Rachiket.
+**Play while your agents work.** A solo hackathon project by Fabian: a mock ChatGPT interface with three games in the sidebar.
 
-## Run locally
+## Run
 
-Use Node 24 (or Node 22.12+).
+Node 24 is recommended (minimum 22.12).
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open the localhost URL printed by Vite. No API key or backend is needed.
+Open the localhost URL printed by Vite. No API keys or environment variables are needed.
 
 ```sh
 npm test
 npm run build
 ```
 
-The production output is `dist/`. The app is a client-only React + TypeScript application built with Vite. Fonts are bundled locally. Sites hosting is the planned target; deployment is not configured or completed yet.
+Static production output is `dist/`. Fonts and game artwork are bundled locally. Hosting is not configured yet.
 
-## What works now
+## Demo flow
 
-- Responsive arcade hub and local nickname persistence.
-- Explicitly simulated Continue with ChatGPT and Fancy a game entry point.
-- Playable memory game: 3×3 → 4×4 → 5×5 → 6×6, shuffled faces, one unmatchable blank on odd boards, time and moves.
-- Fixed-position card backs forming a temporary abstract mosaic. This is not the final Astra poster.
-- Shared deterministic daily memory boards and random Free Play boards.
-- Best results stored on this device, separately by mode and board size. Daily scores are additionally keyed by date.
-- Typing and circle feature modules are reserved routes with honest implementation status.
-- Pure game-rule tests and a GitHub Actions build workflow.
+1. Open New chat, enter a prompt or use a suggestion.
+2. The mock agent thinks and offers **Fancy a game?**
+3. Open **ChatJiPiTi Game** from that invitation or the sidebar.
+4. Play memory matching, strict typing or the yellow-circle challenge.
+5. After 75 seconds the agent announces completion, keeping the game in place.
+6. Score 95+ on the daily circle to see Pope Tibo and bank one simulated reset.
 
-## Pair workflow
+## Games
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) before starting a branch. Proposed ownership:
+- **You’re Absolutely Right!** — 3×3 to 6×6 memory boards; fixed mosaic backs; one unmatchable blank on odd boards; time and moves.
+- **Make No Mistakes** — one wrong character ends the run; Daily 60s / Free Play 300s; seeded progressive phrases; local character/WPM records; IME-aware committed input; paste blocked.
+- **Draw Me a Yellow Circle** — three-second target reveal, press-centre/drag-radius/release submission, position and size scoring; mouse, touch and keyboard; generated Tibo parody and daily reward wallet.
 
-| Owner | Area | Paths |
-| --- | --- | --- |
-| Fabian | Hub, mock profile, entry point, shared style, assets, demo | `src/App.tsx`, `src/styles.css`, `public/`, `docs/` |
-| Rachiket | Typing and circle game rules and UI | `src/features/typing/`, `src/features/circle/` |
-| Coordinate first | Shared state, memory enhancements, dependencies, deployment | `src/lib/`, `src/features/memory/`, package files, hosting configuration |
+Daily mode is repeatable. Challenges use UTC dates. Scores and mock rewards stay on this browser. Clearing browser data clears them. There are no global rankings.
 
-This division is a starting proposal, not a confirmed assignment from Rachiket. Keep feature CSS next to its game to reduce conflicts. Register new shared interfaces before both branches depend on them.
+## Structure
 
-## Next build order
+- `src/App.tsx`: mock chat, sidebar navigation, profile and agent demo.
+- `src/features/{memory,typing,circle}/`: game components and feature styles.
+- `src/lib/challenges.ts`: deterministic challenges and scoring.
+- `src/lib/records.ts`: validated local records and idempotent daily claims.
+- `src/lib/sound.ts`: optional synthesized game sounds.
+- `src/lib/*.test.ts`: generation, input, scoring, storage and reward tests.
 
-1. Invite Rachiket to the remote repository after confirming his GitHub handle.
-2. Implement typing and circle in separate branches.
-3. Agree on daily attempt limits, integrate local results and mock reset wallet.
-4. Replace temporary artwork with Astra poster, agent art and approved Tibo reference.
-5. Verify touch and keyboard interactions, then deploy.
-6. Recheck the hackathon brief and produce the 90-second demo.
+The GitHub repository is `fabianchua6/chatjipiti-game`. The local folder retains its original plural name, `chatjipiti-games`.
 
-See [PRODUCT.md](PRODUCT.md) for game rules and [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md) for remaining checks.
+Read [PRODUCT.md](PRODUCT.md), [CONTRIBUTING.md](CONTRIBUTING.md), [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md) and [docs/ASSETS.md](docs/ASSETS.md).
 
-No real ChatGPT sign-in, agent detection, global leaderboard or account reset integration exists. Reset rewards must stay explicitly simulated.
+This is a parody prototype. ChatGPT authentication, model execution, agent detection and real usage resets are not connected. The memory poster remains temporary abstract art.

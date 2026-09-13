@@ -1,4 +1,4 @@
-# ChatJiPiTi Games
+# ChatJiPiTi Game
 
 <!-- impeccable:product-schema 1 -->
 
@@ -8,46 +8,52 @@ web
 
 ## Purpose and users
 
-Give people short, playful things to do while ChatGPT agents work. The hackathon pair is Fabian and Rachiket. Tagline: **Play while your agents work.**
+A solo hackathon project by Fabian. A mock ChatGPT-style interface makes the time spent waiting for an agent fun, with three small games accessible from its sidebar. Tagline: **Play while your agents work.** The product name is singular: **ChatJiPiTi Game**.
 
-## Stack
+## Stack and delivery
 
-Implementation choice for this starter: React, TypeScript and Vite. Client-only state and localStorage, no backend credentials. This is an agent-selected reversible choice, not a framework preference explicitly confirmed by the user. Sites is the intended hosting destination from the supplied plan; it is not set up yet.
+React, TypeScript and Vite; client-only state and localStorage, no backend credentials. The GitHub repo is `fabianchua6/chatjipiti-game`, private. Local checkout retains the original folder name `chatjipiti-games` to preserve existing workspace links. This release runs locally; hosting is not configured.
 
 ## Confirmed scope
 
-- Mock Continue with ChatGPT, nickname, profile and local scores.
-- Three games, each with shared Daily Challenge and unlimited Free Play.
-- Mock waiting screen with Fancy a game invitation. Real automatic launch is future work.
-- Simulated banked ChatGPT/Astra usage reset rewards. Never modify a real account quota.
-- One cohesive retro arcade appearance: dark background, green main accent, purple memory game, red typing game, yellow circle game. Pixel headings with readable body text and touch-friendly controls.
+- ChatGPT-style dark chat home, working mock composer, sidebar game library and individual games.
+- Sending a prompt starts a scripted agent task, offers Fancy a game, and completes after 75 seconds without interrupting the game.
+- User nickname, local best scores and simulated banked Astra reset wallet.
+- All three games with daily seeded challenges and unlimited Free Play.
+- The project is solo. There is no collaborator assignment or Rachiket invitation.
+- Sign-in, model responses, running-agent state and usage rewards are explicitly simulated. No real account quota is modified.
 
 ## Memory: You’re Absolutely Right!
 
-Progress 3×3, 4×4, 5×5, 6×6. Odd boards have one blank at a shuffled position. It reveals no agent, cannot match, flips back and stays after all pairs clear. Hidden faces shuffle; poster pieces are fixed by board position. Matched cards show their agent faces. Rank by completion time, then moves. Final 6×6 needs 18 distinct agent faces.
+Progress 3×3, 4×4, 5×5, 6×6. Odd boards have one blank at a shuffled position. The blank cannot match; it flips back, preserves any open agent and remains after all pairs clear. Hidden faces shuffle; card backs remain fixed by board position. Rank by completion time, then moves, separately for each board.
 
-Starter convention: selecting a blank counts as one move and preserves an already exposed nonblank card. Each ordinary two-card comparison counts as one move. Results currently apply per board, not the combined four-level run. These are documented implementation choices that can change.
+A blank reveal counts as one move; a two-card comparison counts as one move. Current backs are an abstract purple mosaic. Final Astra poster artwork remains open.
 
 ## Typing: Make No Mistakes
 
-One incorrect key ends the run. Curated AI memes, prompts and agent terminology get harder through longer words, capitalization, punctuation, numbers and small code snippets. Free Play stops at five minutes. Show correct characters, words, WPM and fatal mistake. Rank by correct characters, then WPM. Disable browser text assistance where possible. Daily 60-second cap is a proposal from the prior plan, not a user-confirmed decision.
+One incorrect committed character ends the run. Curated AI memes, prompts and agent terminology progress from lowercase phrases into capitalization, punctuation, numbers and code. Daily: 60 seconds. Free Play: 300 seconds. Timer starts with first input. Backspaces and edits end the run; navigation/modifier keys do not. Paste and drop are blocked without awarding characters. IME is validated after composition commits. Browser text assistance is disabled where supported.
+
+Display correct characters, completed words, WPM, elapsed time and fatal mistake. Rank by correct characters, then WPM. WPM uses five characters per word and a minimum one-second denominator for very short runs. A trailing unfinished word is not counted as completed.
 
 ## Circle: Draw Me a Yellow Circle
 
-Target appears for three seconds, then disappears. First touch fixes centre, dragging sets radius, release submits a perfect geometric circle. Re-show target for comparison. Position and size each contribute 50 points. At 95+, Pope Tibo descends and grants one explicitly simulated banked Astra reset. Tibo sits in a chair before the request. Artwork and exact scoring falloff remain to be implemented.
+Tibo sits in a chair and asks for a yellow circle. Target appears for three seconds, then disappears. First touch sets centre; drag sets radius; release submits. Re-show the target to compare. Pointer cancel discards a stroke. Keyboard support: arrows move centre, +/- resize, Shift refines step, Enter submits, Escape cancels. Coordinates normalize to a square that remains geometrically consistent on resize.
 
-## Open decisions
+Position and radius each contribute 50 points. Position falls linearly to zero at a distance of two target radii; size falls linearly to zero at a radius error equal to the target radius. A zero-radius stroke scores zero. At 95+, Pope Tibo descends and a synthesized chord plays when sound is enabled.
 
-- Rachiket’s GitHub handle and final ownership split.
-- Remote repo creation approval and visibility for final judging.
-- Exactly one ranked daily attempt versus repeatable attempts; starter daily memory is explicitly repeatable.
-- Separate local score tables versus a combined daily result. No percentile ranking without actual population data.
-- Daily rollover: UTC is the current implementation choice.
-- Avatar, final poster/agent artwork and verified Tibo reference.
-- Whether Free Play can grant simulated resets, and reward deduplication rules.
+Daily 95+ earns one simulated reset per UTC date. Claim markers determine balance, so rerenders, repeat attempts and reopening cannot increment the same date. Web Locks serialize claims across tabs where supported; balance remains one key per date even without locks. Practice grants a celebration but no wallet credit.
 
-## Evidence and limits
+## Provisional decisions for this version
 
-The user supplied a prior planning conversation. Its reported hackathon venue/times and external reference claims have not been independently rechecked in this task. The final submission requirements reported there are a deployed app, GitHub repo and exactly 90-second accessible demo showing how Astra was used. Verify against the actual event brief before submitting.
+- Dark ChatGPT-style shell, rather than the former standalone arcade home.
+- Daily challenges are repeatable and show device-local best scores, not a global leaderboard.
+- Daily rollover is midnight UTC.
+- Simulated reset rewards are Daily-only and limited to one per day.
+- Agent demo uses a scripted 75-second run and preserves its banner height at completion.
+- Audio starts muted and remembers the preference.
 
-No final artwork was attached. Starter visuals are authored geometric CSS/SVG illustrations, not generated art or official OpenAI assets. Sign-in, agent waiting state and usage resets are demonstrations only.
+## Evidence and remaining assets
+
+Tibo artwork was generated for this project as an original fictional pixel-art parody. It is not an official likeness. The earlier source conversation's yellow-circle launch-ad claims were not verified; no official imagery is implied. See docs/ASSETS.md for provenance.
+
+The source conversation reported a deployed app, GitHub repo and exactly 90-second demo as submission requirements. Recheck the actual event brief before submitting; no event timing was independently verified here.

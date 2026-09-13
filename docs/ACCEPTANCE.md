@@ -1,25 +1,26 @@
-# Acceptance checklist
+# Acceptance
 
-## Starter
+## Automated
 
-- [ ] Fresh clone: npm ci, npm test and npm run build pass.
-- [ ] Mock sign-in reaches the hub and saves nickname after reload.
-- [ ] All three game entries and Back to arcade work.
-- [ ] Fancy a game opens the hub and is labeled as a simulation.
-- [ ] Memory starts its timer on first flip, clears mismatches, prevents extra flips during reveal, handles blanks and finishes each level.
-- [ ] Progression reaches 6×6 and counts every required pair.
-- [ ] Daily boards are deterministic and Free Play boards reshuffle.
-- [ ] Best times persist separately from practice and per board size.
-- [ ] Storage unavailable or malformed data does not prevent play.
-- [ ] Phone layout, keyboard focus and reduced motion are usable.
+Run `npm test` and `npm run build`.
 
-## Before demo
+Tests cover paired-board counts/blanks, deterministic dates, ranking, corrupt/unavailable storage, typing prefix mismatch/edit detection, WPM, progressive seeded text, contained circle targets, scoring bounds and daily reward idempotency.
 
-- [ ] Typing runs to success/timeout and fails immediately on incorrect input; check physical keys, touchscreen input and composition handling.
-- [ ] Circle supports pointer capture, cancel, release and responsive coordinates; target hidden during drawing.
-- [ ] Circle rewards are simulated and cannot be duplicated by re-rendering or reopening a result.
-- [ ] Final poster, agent faces and verified Tibo assets replace temporary art.
-- [ ] Daily attempt policy and timezone are visible and tested.
-- [ ] Audio mute and animation behavior are complete if included.
-- [ ] Deployed app is reachable by judges without approval; repo visibility/access matches the submission brief.
-- [ ] Exactly 90-second demo is accessible and shows Astra usage.
+## Browser
+
+- Chat composer and suggestions start the mock agent; invitation and sidebar open games.
+- Agent completion leaves the drawing surface in place and does not navigate away from a game.
+- Memory reveals blanks, locks mismatches, completes boards and advances; previous score survives reload.
+- Typing accepts correct characters, fails at first incorrect character, blocks paste, supports composed committed input and stops at deadline. Finish is disabled before input.
+- Circle hides target after three seconds; pointer release scores, cancel aborts, zero-radius scores zero; keyboard controls work.
+- Circle 95+ displays Pope Tibo; daily earns one reset; repeat success does not duplicate the balance; practice never awards resets.
+- Sidebar profile wallet updates and persists across reload.
+- Mobile drawer opens/closes, contains keyboard focus, and navigation moves focus to content.
+- Phone layout has no horizontal overflow; reduced-motion and mute preferences work.
+
+## Before submission
+
+- Decide whether to make the repository public and choose hosting.
+- Replace the temporary memory mosaic with final Astra poster if desired.
+- Confirm daily attempt/reward rules and the desired starting chat prompt.
+- Verify the event’s actual submission brief; prepare an accessible 90-second demo if still required.

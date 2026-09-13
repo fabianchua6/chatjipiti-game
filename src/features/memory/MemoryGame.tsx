@@ -85,6 +85,6 @@ function MemoryBoard({ size, seed, mode, onNext, onRestart }: { size: BoardSize;
     <p className="notice" aria-live="polite">{notice}</p>
     {result && <div className="result" role="status"><h2>You’re absolutely right!</h2><p>Cleared in {result.seconds}s · {result.moves} moves</p><div className="button-row">{onNext && <button onClick={onNext}>Next board</button>}<button className="secondary" onClick={onRestart}>Play again</button></div>{!saved && <p>Your browser could not save this score. You can still play.</p>}</div>}
     {best && <p className="muted">Previous best on this board: {best.seconds}s · {best.moves} moves</p>}
-    <p className="muted">{mode === 'daily' ? 'Shared daily board · repeatable while we build ranked attempts.' : 'Free play · a fresh board each run.'} Scores stay on this device.</p>
+    <p className="muted">{mode === 'daily' ? 'Shared daily board · repeat attempts welcome.' : 'Free play · a fresh board each run.'} Scores stay on this device.</p>
   </>;
 }

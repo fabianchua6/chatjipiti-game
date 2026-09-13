@@ -1,0 +1,81 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { circleTarget, compareTyping, constrainCircle, scoreCircle, typingMetrics, typingPassage } from './challenges.ts';
+import { claimDailyReset, resetBalance, isScore, isTypingRecord, saveTypingRecord, readRecord } from './records.ts';
+
+test('typing challenge is deterministic, varied and long enough for five minutes', () => {
+  const passage = typingPassage('day-a');
+  assert.equal(passage, typingPassage('day-a'));
+  assert.notEqual(passage, typingPassage('day-b'));
+  assert.ok(passage.length > 10000);
+  assert.match(passage.slice(0, 100), /^[a-z ]+$/);
+  assert.match(passage, /[{};0-9]/);
+});
+test('strict input stops at the first mistake, including space and edits', () => {
+  assert.deepEqual(compareTyping('he', 'hello ', 'hello world'), { correct: 6, mistake: null, expected: null });
+  assert.deepEqual(compareTyping('he', 'helxo', 'hello world'), { correct: 3, mistake: 'x', expected: 'l' });
+  assert.deepEqual(compareTyping('hello', 'hellox', 'hello world'), { correct: 5, mistake: 'x', expected: ' ' });
+  assert.equal(compareTyping('hello', 'hell', 'hello world').mistake, 'an edit or backspace');
+  assert.equal(compareTyping('hello', 'hallo', 'hello world').correct, 5);
+});
+test('typing WPM uses five characters per word and excludes unfinished words', () => {
+  assert.deepEqual(typingMetrics('hello wor', 60000), { correct: 9, words: 1, wpm: 2 });
+  assert.deepEqual(typingMetrics('hello ', 30000), { correct: 6, words: 1, wpm: 2 });
+  assert.equal(typingMetrics('', 0).wpm, 0);
+});
+test('circle targets are seeded and fully within the normalized square', () => {
+  for (let index = 0; index < 100; index++) {
+    const target = circleTarget(String(index));
+    assert.deepEqual(target, circleTarget(String(index)));
+    assert.ok(target.x - target.radius >= 0 && target.y - target.radius >= 0);
+    assert.ok(target.x + target.radius <= 1 && target.y + target.radius <= 1);
+  }
+});
+test('circle scoring splits position and size and handles invalid strokes', () => {
+  const target = { x: .5, y: .5, radius: .2 };
+  assert.deepEqual(scoreCircle(target, target), { position: 50, size: 50, total: 100 });
+  assert.deepEqual(scoreCircle(target, { ...target, radius: .1 }), { position: 50, size: 25, total: 75 });
+  assert.equal(scoreCircle(target, { ...target, x: .7 }).position, 25);
+  assert.equal(scoreCircle(target, { ...target, radius: 0 }).total, 0);
+  assert.equal(scoreCircle(target, { ...target, x: NaN }).total, 0);
+  assert.equal(scoreCircle(target, { ...target, radius: .18 }).total, 95);
+});
+test('circle size is constrained to stay inside the play area', () => {
+  assert.deepEqual(constrainCircle({ x: .9, y: .5, radius: .8 }), { x: .9, y: .5, radius: 1 - .9 });
+  assert.deepEqual(constrainCircle({ x: -1, y: 2, radius: 1 }), { x: 0, y: 1, radius: 0 });
+});
+test('daily wallet is derived from unique claims and survives repeated attempts', () => {
+  const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  const windowDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  const records = new Map<string, string>();
+  let fail = false;
+  Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
+    get length() { return records.size; }, key: (i: number) => Array.from(records.keys())[i] ?? null,
+    getItem: (key: string) => records.get(key) ?? null,
+    setItem: (key: string, value: string) => { if (fail) throw Error('blocked'); records.set(key, value); },
+  } });
+  Object.defineProperty(globalThis, 'window', { configurable: true, value: new EventTarget() });
+  try {
+    assert.equal(claimDailyReset('2026-09-13'), 'earned');
+    assert.equal(claimDailyReset('2026-09-13'), 'claimed');
+    assert.equal(resetBalance(), 1);
+    assert.equal(claimDailyReset('2026-09-14'), 'earned');
+    assert.equal(resetBalance(), 2);
+    assert.equal(claimDailyReset('bad'), 'unavailable');
+    saveTypingRecord('typing-test', { correct: 10, words: 2, wpm: 30 });
+    saveTypingRecord('typing-test', { correct: 9, words: 1, wpm: 90 });
+    assert.equal(readRecord('typing-test', isTypingRecord)?.correct, 10);
+    saveTypingRecord('typing-test', { correct: 10, words: 2, wpm: 40 });
+    assert.equal(readRecord('typing-test', isTypingRecord)?.wpm, 40);
+    fail = true;
+    assert.equal(claimDailyReset('2026-09-15'), 'unavailable');
+    assert.equal(resetBalance(), 2);
+    assert.equal(saveTypingRecord('typing-test', { correct: 11, words: 2, wpm: 40 }), false);
+    assert.equal(isTypingRecord({ correct: -1, words: 2, wpm: 3 }), false);
+    assert.equal(isScore(101), false);
+    assert.equal(isScore(NaN), false);
+  } finally {
+    if (descriptor) Object.defineProperty(globalThis, 'localStorage', descriptor); else Reflect.deleteProperty(globalThis, 'localStorage');
+    if (windowDescriptor) Object.defineProperty(globalThis, 'window', windowDescriptor); else Reflect.deleteProperty(globalThis, 'window');
+  }
+});
