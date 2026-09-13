@@ -69,7 +69,7 @@ async function check(){
  const src=path.join(dir,'source'),out=path.join(dir,'output');await fs.mkdir(src);await fs.mkdir(out);await fs.chmod(out,0o777);
  const tracked=(await run('git',['ls-files','-z'])).split('\0').filter(Boolean);
  for(const f of tracked){if(f.startsWith('.git')||f.startsWith('.openai')||f.startsWith('.env')||f.startsWith('scripts/hearth/runner'))continue;const st=await fs.lstat(f);if(!st.isFile()||st.isSymbolicLink())throw Error('Unsafe source type');await fs.mkdir(path.dirname(path.join(src,f)),{recursive:true});await fs.copyFile(f,path.join(src,f));}
- await run('docker',['run','--rm','--cap-drop','ALL','-v',src+':/work','-w','/work',image,'bash','-lc','npm ci --ignore-scripts && npm install --ignore-scripts --no-save @playwright/test@1.58.2'],{timeout:600000});
+ await run('docker',['run','--rm','--cap-drop','ALL','--user',String(process.getuid())+':'+String(process.getgid()),'-e','HOME=/tmp','-v',src+':/work','-w','/work',image,'bash','-lc','npm ci --ignore-scripts && npm install --ignore-scripts --no-save @playwright/test@1.58.2'],{timeout:600000});
  for(const [f,content]of Object.entries(state.files)){await fs.mkdir(path.dirname(path.join(src,f)),{recursive:true});await fs.writeFile(path.join(src,f),content);}
  let log='';
  async function isolated(command,outputMode='ro',checkMode='smoke'){
