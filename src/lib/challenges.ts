@@ -2,17 +2,24 @@ import { randomFromSeed } from './game.ts';
 export type GameMode = 'daily' | 'practice';
 export type Circle = { x: number; y: number; radius: number };
 export type CircleScore = { position: number; size: number; total: number };
-const TIERS = [
-  ['you are absolutely right', 'let me think about that', 'make no mistakes', 'one more prompt should do it', 'the agent is still working', 'draw me a yellow circle', 'ship it and then get coffee', 'tiny games for big thinking'],
-  ['The context window remembers.', 'Your agent has entered thinking mode.', 'Please explain this like I am five.', 'No meetings, just parallel agents.', 'That is an excellent observation!', 'Astra is building something good.'],
-  ['Run 3 checks, then deploy version 2.', 'Accuracy: 100%. Confidence: cautiously optimistic.', 'Return valid JSON: {"status":"ready"}.', 'const answer = 42; // probably', 'if (bugs === 0) { ship(); }', 'git commit -m "make no mistakes"'],
+export const TYPING_WORD_LIMIT = 15;
+const TYPING_PHRASES = [
+  'you are absolutely right and this tiny game is having a wonderful little moment today',
+  'let me think about that while the pixels quietly assemble a perfect answer for you',
+  'no mistakes just vibes and a confident keyboard moving one clean word at a time',
+  'the agent is still working but your fingers are already speedrunning the best possible answer',
+  'small prompt big energy every letter lands exactly where the universe intended it to today',
+  'this is your sign to type boldly and let the tiny arcade judge your accuracy',
+  'a perfect streak begins with one careful character and ends with wildly good vibes tonight',
+  'please type this sentence exactly and pretend the scoreboard is a very serious scientific instrument',
+  'the answer is somewhere in here and your keyboard knows exactly how to find it',
+  'one tiny challenge three seconds of courage and a surprisingly dramatic amount of confidence today',
+  'your fingers are faster than the agent and that feels like useful information right now',
+  'keep the rhythm keep the focus and let every lowercase letter land beautifully today somehow',
 ];
 export function typingPassage(seed: string): string {
   const random = randomFromSeed(`typing:${seed}`);
-  return Array.from({ length: 320 }, (_, index) => {
-    const tier = TIERS[index < 5 ? 0 : index < 12 ? 1 : 2];
-    return tier[Math.floor(random() * tier.length)];
-  }).join(' ');
+  return TYPING_PHRASES[Math.floor(random() * TYPING_PHRASES.length)] ?? TYPING_PHRASES[0];
 }
 export function compareTyping(previous: string, next: string, passage: string): { correct: number; mistake: string | null; expected: string | null } {
   if (!next.startsWith(previous)) return { correct: previous.length, mistake: 'an edit or backspace', expected: passage[previous.length] ?? null };
@@ -23,11 +30,11 @@ export function compareTyping(previous: string, next: string, passage: string): 
   }
   return { correct: cursor, mistake: null, expected: null };
 }
-export function typingMetrics(prefix: string, elapsedMs: number) {
+export function typingMetrics(prefix: string, elapsedMs: number, complete = false) {
   const correct = prefix.length;
   const elapsed = Math.max(0, elapsedMs);
   const wpm = elapsed > 0 ? Math.round(correct / 5 / (Math.max(elapsed, 1000) / 60000)) : 0;
-  const words = (prefix.match(/\S+\s/g) ?? []).length;
+  const words = (prefix.match(/\S+\s/g) ?? []).length + (complete && /\S$/.test(prefix) ? 1 : 0);
   return { correct, words, wpm };
 }
 export function circleTarget(seed: string): Circle {

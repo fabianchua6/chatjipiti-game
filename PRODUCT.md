@@ -17,7 +17,7 @@ React, TypeScript and Vite; client-only state and localStorage, no backend crede
 ## Confirmed scope
 
 - ChatGPT-style dark chat home, working mock composer, sidebar game library and individual games.
-- Sending a prompt starts a scripted agent task, offers Fancy a game, and completes after 75 seconds without interrupting the game.
+- Sending a prompt starts a scripted 30-second task. The ghost invitation expands to slim game cards; choosing one starts a compact playable window inside the chat. Minimise pauses the round into a pixel pet; clicking the pet resumes it. Task completion preserves the game.
 - User nickname, local best scores and simulated banked Astra reset wallet.
 - All three games with daily seeded challenges and unlimited Free Play.
 - The project is solo. There is no collaborator assignment or Rachiket invitation.
@@ -31,9 +31,9 @@ A blank reveal counts as one move; a two-card comparison counts as one move. Bac
 
 ## Typing: Make No Mistakes
 
-Typing happens directly in the pixel-text passage. A transparent native textarea overlays the passage to preserve keyboard and composition support; the highlighted character acts as the visible cursor. One incorrect committed character ends the run. Curated AI memes, prompts and agent terminology progress from lowercase phrases into capitalization, punctuation, numbers and code. Daily: 60 seconds. Free Play: 300 seconds. Timer starts with first input. Backspaces and edits end the run; navigation/modifier keys do not. Paste and drop are blocked without awarding characters. IME is validated after composition commits. Browser text assistance is disabled where supported.
+Typing happens directly in the pixel-text passage. A transparent native textarea overlays the passage to preserve keyboard and composition support; the highlighted character acts as the visible cursor. One incorrect committed character ends the run. Short lowercase AI jokes form exactly 15 words per round. Daily and Free Play both cap the round at 30 seconds, or end earlier when the passage is complete. Timer starts with first input. Backspaces and edits end the run; navigation/modifier keys do not. Paste and drop are blocked without awarding characters. IME is validated after composition commits. Browser text assistance is disabled where supported.
 
-Display correct characters, completed words, WPM, elapsed time and fatal mistake. Rank by correct characters, then WPM. WPM uses five characters per word and a minimum one-second denominator for very short runs. A trailing unfinished word is not counted as completed.
+Display correct characters, completed words, WPM, elapsed time and fatal mistake. Rank by correct characters, then WPM. WPM uses five characters per word and a minimum one-second denominator for very short runs. A trailing unfinished word is not counted as completed; finishing the full passage counts all 15 words. Short-round records use a new key so legacy long-run scores remain separate.
 
 ## Circle: Draw Me a Yellow Circle
 

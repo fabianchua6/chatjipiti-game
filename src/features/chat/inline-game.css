@@ -1,0 +1,45 @@
+.chat-inline-game{max-width:560px;min-width:0;margin-top:12px;border:1px solid #454545;border-radius:20px;background:#252525;overflow:hidden;container-type:inline-size}
+.chat-inline-game[hidden]{display:none}
+.inline-game-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 12px;border-bottom:1px solid #3d3d3d;min-height:44px}
+.inline-game-toolbar>span,.inline-game-toolbar>div,.inline-game-toolbar button{display:flex;align-items:center;gap:7px}
+.inline-game-toolbar>span{min-width:0}
+.inline-game-toolbar strong{font-size:12px;font-weight:500;line-height:1.4}
+.inline-game-toolbar .icon{width:16px;height:16px;flex-shrink:0}
+.inline-game-toolbar button{min-height:36px;padding:8px;border-radius:9px;color:#bdbdbd;font-size:12px}
+.inline-game-toolbar button:hover{background:#ffffff0b;color:#eee}
+.inline-game-body{padding:12px;min-width:0;max-height:min(460px,calc(100dvh - 300px));overflow:auto;scrollbar-width:thin;scrollbar-color:#555 transparent;overscroll-behavior:contain}
+.chat-inline-game .game-heading{display:none}
+.chat-inline-game .scoreboard{margin:12px auto 16px;max-width:400px;gap:12px;font-size:11px}
+.chat-inline-game .scoreboard strong{font-size:18px}
+.chat-inline-game .memory-arena{max-width:250px}
+.chat-inline-game .memory-deck-meta,.chat-inline-game .game-surface>p.muted,.chat-inline-game .personal-best,.chat-inline-game .keyboard-legend{display:none}
+.chat-inline-game .notice{margin-top:12px!important;font-size:12px}
+.chat-inline-game .game-surface>p.muted{font-size:11px;margin-top:12px}
+.chat-inline-game .keyboard-legend{font-size:11px;margin-top:16px;padding:10px}
+.chat-inline-game .keyboard-legend-note{display:none}
+.chat-inline-game .circle-layout{margin-top:10px}
+.chat-inline-game .typing-stage{padding:20px;margin:16px 0}
+.chat-inline-game .typing-passage{font-size:11px;line-height:2.2;min-height:4lh;max-height:5lh}
+.chat-inline-game .typing-status{font-size:8px;padding-top:12px;margin-top:12px}
+.chat-inline-game .game-start{font-size:12px;margin-top:8px;min-height:40px}
+.chat-inline-game .result{padding:16px;margin-top:16px}
+.chat-inline-game .result h2{font-size:15px}
+.chat-inline-game .result-metrics{gap:18px;margin:14px 0}
+.chat-inline-game .result-metrics span{font-size:11px}
+.chat-inline-game .result-metrics strong{font-size:20px}
+.chat-inline-game .match-proclamation strong{font-size:clamp(15px,5cqi,24px)}
+.inline-game-back{display:flex;align-items:center;gap:8px;min-height:44px;margin-top:8px;font-size:12px;color:#c5c5c5}
+.inline-game-back .icon{width:15px;height:15px}
+.chat-game-pet{position:fixed;z-index:15;right:24px;bottom:24px;display:flex;align-items:center;gap:12px;padding:4px;background:transparent;border-radius:16px;animation:pet-arrive 220ms cubic-bezier(.16,1,.3,1) both}
+.pixel-pet{width:54px;height:62px;filter:drop-shadow(0 5px 5px #0004);transform-origin:bottom;transition:transform 160ms}
+.chat-game-pet:hover .pixel-pet{transform:translateY(-3px) rotate(4deg)}
+.pet-caption{display:block;text-align:right;font-size:12px;line-height:1.5;color:#dedede;background:#292929;border:1px solid #454545;padding:8px 12px;border-radius:12px;box-shadow:0 4px 12px #0002}
+.pet-caption>span{display:block;font-size:10px;color:#b6b6b6}
+[data-game-paused] *,[data-game-paused] *::before,[data-game-paused] *::after{animation-play-state:paused!important}
+@keyframes pet-arrive{from{opacity:0;transform:translateY(8px) scale(.9)}to{opacity:1;transform:none}}
+@media(max-width:600px){.inline-game-toolbar{flex-wrap:wrap;padding:6px 10px}.inline-game-toolbar>div{margin-left:auto}.inline-game-toolbar strong{font-size:11px}.inline-game-body{padding:12px}.chat-inline-game .scoreboard{font-size:10px;gap:8px}.chat-inline-game .scoreboard strong{font-size:15px}.chat-inline-game .typing-stage{padding:14px}.chat-inline-game .typing-passage{font-size:10px;min-height:5lh;max-height:6lh}.chat-game-pet{right:16px;bottom:190px}.pixel-pet{width:44px;height:50px}.pet-caption{font-size:11px;padding:6px 10px}.pet-caption>span{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.chat-game-pet{animation:none}.pixel-pet{transition:none}.chat-game-pet:hover .pixel-pet{transform:none}}
+
+.chat-inline-game .artwork-settings{margin-top:0;margin-bottom:0}.chat-inline-game .artwork-settings>summary{min-height:32px;padding-block:4px;font-size:11px}.chat-inline-game .scoreboard{margin-top:8px;margin-bottom:12px}.chat-inline-game .memory-game .notice{margin-top:10px!important;margin-bottom:0;font-size:11px;min-height:18px}
+
+.chat-inline-game{scroll-margin-top:12px}

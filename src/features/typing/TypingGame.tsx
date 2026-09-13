@@ -10,8 +10,9 @@ import './typing.css';
 
 type Phase = 'idle' | 'armed' | 'running' | 'finished';
 type Result = ReturnType<typeof typingMetrics> & { seconds: number; reason: string; expected: string | null; received: string | null };
+type TypingGameProps = { mode: GameMode; muted: boolean; paused?: boolean };
 
-export default function TypingGame({ mode, muted }: { mode: GameMode; muted: boolean }) {
+export default function TypingGame({ mode, muted, paused = false }: TypingGameProps) {
   const [seed, setSeed] = useState(() => mode === 'daily' ? dailySeed() : crypto.randomUUID());
   const [passage, setPassage] = useState(() => typingPassage(seed));
   const [phase, setPhase] = useState<Phase>('idle');
@@ -29,18 +30,25 @@ export default function TypingGame({ mode, muted }: { mode: GameMode; muted: boo
   const started = useRef<number | null>(null);
   const finished = useRef(false);
   const composing = useRef(false);
-  const deadline = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const finishRef = useRef<(reason: string) => void>(() => {});
-  const limit = mode === 'daily' ? 60 : 300;
-  const recordKey = `typing:${mode}:${mode === 'daily' ? seed : 'all'}`;
+  const pausedRef = useRef(paused);
+  const pausedAt = useRef<number | null>(null);
+  const pausedTotal = useRef(0);
+  const limit = 30;
+  const recordKey = `typing:short:${mode}:${mode === 'daily' ? seed : 'all'}`;
   const best = readRecord(recordKey, isTypingRecord);
+
+  function currentElapsed(now = performance.now()) {
+    if (started.current === null) return 0;
+    const pausedDuration = pausedAt.current === null ? 0 : now - pausedAt.current;
+    return Math.min(limit * 1000, Math.max(0, now - started.current - pausedTotal.current - pausedDuration));
+  }
 
   function finish(reason: string, expected: string | null = null, received: string | null = null) {
     if (finished.current) return;
     finished.current = true;
-    clearTimeout(deadline.current);
-    const duration = started.current === null ? 0 : Math.min(limit * 1000, performance.now() - started.current);
-    const metrics = typingMetrics(prefix.current, duration);
+    const duration = started.current === null ? 0 : currentElapsed();
+    const metrics = typingMetrics(prefix.current, duration, prefix.current.length === passage.length);
     setResult({ ...metrics, seconds: Math.round(duration / 100) / 10, reason, expected, received });
     setElapsed(duration); setPhase('finished');
     setSaved(metrics.correct > 0 ? saveTypingRecord(recordKey, metrics) : true);
@@ -50,30 +58,56 @@ export default function TypingGame({ mode, muted }: { mode: GameMode; muted: boo
   useEffect(() => {
     const tick = setInterval(() => {
       if (started.current !== null && !finished.current) {
-        const time = performance.now() - started.current;
+        if (pausedRef.current) return;
+        const time = currentElapsed();
         setElapsed(Math.min(limit * 1000, time));
         if (time >= limit * 1000) finishRef.current('Time’s up. Clean run.');
       }
     }, 100);
-    return () => { clearInterval(tick); clearTimeout(deadline.current); };
+    return () => { clearInterval(tick); };
   }, [limit]);
 
+  useEffect(() => {
+    const wasPaused = pausedRef.current;
+    if (wasPaused === paused) return;
+    pausedRef.current = paused;
+    if (paused) {
+      if (started.current !== null && !finished.current) {
+        const frozen = currentElapsed();
+        setElapsed(frozen);
+        pausedAt.current = performance.now();
+      }
+      return;
+    }
+    if (pausedAt.current !== null) {
+      pausedTotal.current += performance.now() - pausedAt.current;
+      pausedAt.current = null;
+    }
+    if (started.current !== null && !finished.current) {
+      const resumed = currentElapsed();
+      setElapsed(resumed);
+      if (resumed >= limit * 1000) finishRef.current('Time’s up. Clean run.');
+      requestAnimationFrame(() => input.current?.focus());
+    } else if (phase === 'armed') {
+      requestAnimationFrame(() => input.current?.focus());
+    }
+  }, [paused, limit, phase]);
+
   function start() {
-    clearTimeout(deadline.current);
+    if (pausedRef.current) return;
     const nextSeed = mode === 'daily' ? dailySeed() : crypto.randomUUID();
     setSeed(nextSeed); setPassage(typingPassage(nextSeed));
-    prefix.current = ''; started.current = null; finished.current = false; composing.current = false;
+    prefix.current = ''; started.current = null; pausedAt.current = null; pausedTotal.current = 0; finished.current = false; composing.current = false;
     setDraft(''); setCorrect(0); setElapsed(0); setResult(null); setHint(''); setSaved(true); setPhase('armed');
     requestAnimationFrame(() => input.current?.focus());
   }
   function accept(next: string) {
-    if (finished.current || phase === 'idle' || phase === 'finished') return;
-    if (started.current !== null && performance.now() - started.current >= limit * 1000) { finish('Time’s up. Clean run.'); return; }
+    if (pausedRef.current || finished.current || phase === 'idle' || phase === 'finished') return;
+    if (started.current !== null && currentElapsed() >= limit * 1000) { finish('Time’s up. Clean run.'); return; }
     if (next === prefix.current) return;
     if (started.current === null) {
       markPlayed('typing');
       started.current = performance.now(); setPhase('running');
-      deadline.current = setTimeout(() => finishRef.current('Time’s up. Clean run.'), limit * 1000);
     }
     const outcome = compareTyping(prefix.current, next, passage);
     prefix.current = passage.slice(0, outcome.correct); setCorrect(outcome.correct); setDraft(prefix.current);
@@ -85,7 +119,7 @@ export default function TypingGame({ mode, muted }: { mode: GameMode; muted: boo
   useEffect(() => {
     const isSpace = (event: globalThis.KeyboardEvent) => event.code === 'Space' || event.key === ' ';
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.defaultPrevented || event.isComposing) return;
+      if (paused || event.defaultPrevented || event.isComposing) return;
       const target = event.target;
       if (target instanceof HTMLElement && target !== input.current) {
         if (target.closest('input, textarea, select, button, a, [contenteditable="true"], [role="button"], [role="dialog"]')) return;
@@ -107,8 +141,8 @@ export default function TypingGame({ mode, muted }: { mode: GameMode; muted: boo
     window.addEventListener('keyup', onKeyUp);
     window.addEventListener('blur', onBlur);
     return () => { window.removeEventListener('keydown', onKeyDown); window.removeEventListener('keyup', onKeyUp); window.removeEventListener('blur', onBlur); };
-  }, [active, phase]);
-  const metrics = typingMetrics(passage.slice(0, correct), elapsed);
+  }, [active, phase, paused]);
+  const metrics = typingMetrics(passage.slice(0, correct), elapsed, correct === passage.length);
   const lookBehind = Math.max(0, correct - 18);
   return <section ref={surface} className="game-surface typing-game">
     <div className="game-heading"><div><h1>Make No Mistakes</h1><p>One wrong character. Game over. You’ve been warned.</p></div><span className="game-glyph coral"><Icon name="type"/></span></div>
@@ -119,14 +153,14 @@ export default function TypingGame({ mode, muted }: { mode: GameMode; muted: boo
       <div className="typing-passage" aria-hidden="true"><span className="typed">{passage.slice(lookBehind, correct)}</span><mark className={result?.received ? 'fatal-character' : ''}>{passage[correct] ?? ' '}</mark><span>{passage.slice(correct + 1, correct + 240)}</span></div>
       <p className="sr-only" id="typing-prompt">Type exactly: {passage.slice(correct, correct + 240)}</p>
       <label htmlFor="typing-input" className="sr-only">Type the passage</label>
-      <textarea ref={input} id="typing-input" onClick={event => { const field = event.currentTarget; field.setSelectionRange(field.value.length, field.value.length); }} rows={2} disabled={!active} value={draft} onChange={event => { setDraft(event.target.value); if (!composing.current) accept(event.target.value); }} onCompositionStart={() => { composing.current = true; }} onCompositionEnd={event => { composing.current = false; accept(event.currentTarget.value); }} onPaste={event => { event.preventDefault(); setHint('No pasting. This one is all you.'); }} onDrop={event => event.preventDefault()} spellCheck={false} autoCorrect="off" autoComplete="off" autoCapitalize="none" inputMode="text" aria-describedby="typing-prompt typing-shortcuts" />
+      <textarea ref={input} id="typing-input" onClick={event => { const field = event.currentTarget; field.setSelectionRange(field.value.length, field.value.length); }} rows={2} disabled={!active || paused} value={draft} onChange={event => { setDraft(event.target.value); if (!composing.current) accept(event.target.value); }} onCompositionStart={() => { composing.current = true; }} onCompositionEnd={event => { composing.current = false; accept(event.currentTarget.value); }} onPaste={event => { event.preventDefault(); setHint('No pasting. This one is all you.'); }} onDrop={event => event.preventDefault()} spellCheck={false} autoCorrect="off" autoComplete="off" autoCapitalize="none" inputMode="text" aria-describedby="typing-prompt typing-shortcuts" />
       </div>
-      <div className="typing-status"><span aria-hidden="true">{active ? ">" : "·"}</span> {phase === 'armed' ? 'TYPE TO BEGIN' : phase === 'running' ? 'KEEP GOING_' : phase === 'finished' ? 'SPACE TO TRY AGAIN' : 'SPACE TO START'}</div>
+      <div className="typing-status"><span aria-hidden="true">{active && !paused ? ">" : "·"}</span> {paused ? 'PAUSED · RESUME TO PLAY' : phase === 'armed' ? 'TYPE TO BEGIN' : phase === 'running' ? 'KEEP GOING_' : phase === 'finished' ? 'SPACE TO TRY AGAIN' : 'SPACE TO START'}</div>
     </div>
     <p id="typing-shortcuts" className="typing-shortcuts"><span><kbd>Esc</kbd> restart</span><span><kbd>⌘ / Ctrl</kbd> + <kbd>Enter</kbd> finish</span></p>
     {hint && <p role="status" className="inline-notice">{hint}</p>}
-    {!active && !result && <button className="primary game-start" onClick={start}>Start typing <kbd>Space</kbd></button>}
-    {active && <button className="secondary game-start" disabled={phase === 'armed'} onClick={() => finish('Run banked. Nicely done.')}>Finish run</button>}
+    {!active && !result && <button className="primary game-start" disabled={paused} onClick={start}>Start typing <kbd>Space</kbd></button>}
+    {active && <button className="secondary game-start" disabled={paused || phase === 'armed'} onClick={() => finish('Run banked. Nicely done.')}>Finish run</button>}
     {result && <div className={`result ${result.received ? 'failure' : ''}`} role="status"><h2>{result.reason}</h2><div className="result-metrics"><span><strong>{result.correct}</strong> correct characters</span><span><strong>{result.words}</strong> completed words</span><span><strong>{result.wpm}</strong> WPM</span></div><p className="muted">{result.seconds}s played · {saved ? 'Best score saved on this device.' : 'Browser storage is unavailable; this result was not saved.'}</p><button className="primary" onClick={start}>Another run <kbd>Space</kbd></button></div>}
   </section>;
 }

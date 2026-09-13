@@ -1,3 +1,4 @@
+import { useGameClock } from '../../lib/useGameClock';
 import { markPlayed } from '../../lib/playedToday';
 import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent, PointerEvent } from 'react';
@@ -14,7 +15,9 @@ import type { CSSProperties } from 'react';
 
 type Phase = 'idle' | 'reveal' | 'draw' | 'result';
 type Reward = 'earned' | 'claimed' | 'unavailable' | null;
-export default function CircleGame({ mode, muted }: { mode: GameMode; muted: boolean }) {
+export default function CircleGame({ mode, muted, paused = false }: { mode: GameMode; muted: boolean; paused?: boolean }) {
+  const clock = useGameClock(paused);
+  const revealUntil = useRef(0);
   const { selected: world } = useArtLibrary('environment');
   const [phase, setPhase] = useState<Phase>('idle');
   const [seed, setSeed] = useState(() => mode === 'daily' ? dailySeed() : crypto.randomUUID());
@@ -30,21 +33,32 @@ export default function CircleGame({ mode, muted }: { mode: GameMode; muted: boo
   const stroke = useRef<Circle | null>(null);
   const submitted = useRef(false);
   const attempt = useRef(0);
+  useEffect(() => {
+    if (!paused || activePointer.current === null) return;
+    const pointer = activePointer.current;
+    activePointer.current = null;
+    if (stage.current?.hasPointerCapture(pointer)) stage.current.releasePointerCapture(pointer);
+    stroke.current = null;
+    setDrawn(null);
+    setHint('Round resumed. Draw your circle when you’re ready.');
+  }, [paused]);
   const recordKey = `circle:${mode}:${mode === 'daily' ? seed : 'all'}`;
   const best = readRecord(recordKey, isScore);
 
   useEffect(() => {
-    if (phase !== 'reveal') return;
-    const until = performance.now() + 3000;
+    if (phase !== 'reveal' || paused) return;
+    const until = revealUntil.current;
     const timer = setInterval(() => {
-      const remaining = Math.ceil((until - performance.now()) / 1000);
+      const remaining = Math.ceil((until - clock.now()) / 1000);
       setCountdown(Math.max(0, remaining));
       if (remaining <= 0) { setPhase('draw'); setHint('Your turn. Press where the centre was, then drag.'); clearInterval(timer); }
     }, 50);
     return () => clearInterval(timer);
-  }, [phase]);
+  }, [phase, paused, clock]);
 
   function start() {
+    if (paused) return;
+    revealUntil.current = clock.now() + 3000;
     markPlayed('circle');
     attempt.current++;
     const nextSeed = mode === 'daily' ? dailySeed() : crypto.randomUUID();
@@ -59,13 +73,13 @@ export default function CircleGame({ mode, muted }: { mode: GameMode; muted: boo
     return { x: Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width)), y: Math.max(0, Math.min(1, (event.clientY - bounds.top) / bounds.height)) };
   }
   function updatePointer(event: PointerEvent<SVGSVGElement>) {
-    if (activePointer.current !== event.pointerId || !stroke.current || phase !== 'draw') return null;
+    if (activePointer.current !== event.pointerId || !stroke.current || paused || phase !== 'draw') return null;
     const point = position(event);
     const next = constrainCircle({ ...stroke.current, radius: Math.hypot(point.x - stroke.current.x, point.y - stroke.current.y) });
     stroke.current = next; setDrawn(next); return next;
   }
   function submit(circle: Circle) {
-    if (submitted.current || phase !== 'draw') return;
+    if (submitted.current || paused || phase !== 'draw') return;
     submitted.current = true;
     const result = scoreCircle(target, circle);
     setDrawn(circle); setScore(result); setPhase('result');
@@ -85,7 +99,7 @@ export default function CircleGame({ mode, muted }: { mode: GameMode; muted: boo
     setHint('Stroke cancelled. Try again without lifting until you’re done.');
   }
   function keyboard(event: KeyboardEvent<SVGSVGElement>) {
-    if (phase !== 'draw' || activePointer.current !== null) return;
+    if (paused || phase !== 'draw' || activePointer.current !== null) return;
     const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', '+', '=', '-', '_', 'Enter', 'Escape'];
     if (!keys.includes(event.key)) return;
     event.preventDefault();
@@ -107,7 +121,7 @@ export default function CircleGame({ mode, muted }: { mode: GameMode; muted: boo
         <div className={`retro-room ${blessed ? 'blessed' : ''}`} style={{ '--environment-image': `url("${world.url}")` } as CSSProperties} role="group" aria-label={`${world.name}, with a seated man, briefcase and a large screen`}>
         <div className={`circle-canvas ${blessed ? 'is-blessed' : ''}`}>
           <svg ref={stage} className="drawing-surface" viewBox="0 0 1000 1000" tabIndex={0} role="application" aria-label="Circle drawing area" aria-describedby="circle-keyboard" onKeyDown={keyboard} onPointerDown={event => {
-            if (phase !== 'draw' || !event.isPrimary || event.button !== 0 || activePointer.current !== null) return;
+            if (paused || phase !== 'draw' || !event.isPrimary || event.button !== 0 || activePointer.current !== null) return;
             event.preventDefault(); event.currentTarget.focus();
             activePointer.current = event.pointerId; event.currentTarget.setPointerCapture(event.pointerId);
             stroke.current = { ...position(event), radius: 0 }; setDrawn(stroke.current);

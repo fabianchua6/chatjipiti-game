@@ -1,15 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { circleTarget, compareTyping, constrainCircle, scoreCircle, typingMetrics, typingPassage } from './challenges.ts';
+import { circleTarget, compareTyping, constrainCircle, scoreCircle, typingMetrics, typingPassage, TYPING_WORD_LIMIT } from './challenges.ts';
 import { claimDailyReset, resetBalance, isScore, isTypingRecord, saveTypingRecord, readRecord } from './records.ts';
 
-test('typing challenge is deterministic, varied and long enough for five minutes', () => {
+test('typing challenge is deterministic, varied and short enough for a quick round', () => {
   const passage = typingPassage('day-a');
   assert.equal(passage, typingPassage('day-a'));
   assert.notEqual(passage, typingPassage('day-b'));
-  assert.ok(passage.length > 10000);
-  assert.match(passage.slice(0, 100), /^[a-z ]+$/);
-  assert.match(passage, /[{};0-9]/);
+  assert.equal(passage.trim().split(/\s+/).length, TYPING_WORD_LIMIT);
+  assert.match(passage, /^[a-z ]+$/);
+  assert.ok(passage.length < 120);
 });
 test('strict input stops at the first mistake, including space and edits', () => {
   assert.deepEqual(compareTyping('he', 'hello ', 'hello world'), { correct: 6, mistake: null, expected: null });
@@ -21,6 +21,9 @@ test('strict input stops at the first mistake, including space and edits', () =>
 test('typing WPM uses five characters per word and excludes unfinished words', () => {
   assert.deepEqual(typingMetrics('hello wor', 60000), { correct: 9, words: 1, wpm: 2 });
   assert.deepEqual(typingMetrics('hello ', 30000), { correct: 6, words: 1, wpm: 2 });
+  assert.equal(typingMetrics('hello world', 60000).words, 1);
+  assert.equal(typingMetrics('hello world', 60000, true).words, 2);
+  assert.equal(typingMetrics('hello ', 30000, true).words, 1);
   assert.equal(typingMetrics('', 0).wpm, 0);
 });
 test('circle targets are seeded and fully within the normalized square', () => {

@@ -3,7 +3,7 @@ import type Icon from './components/Icon';
 import MemoryGame from './features/memory/MemoryGame';
 import TypingGame from './features/typing/TypingGame';
 import CircleGame from './features/circle/CircleGame';
-export type StudioGame = { id: string; title: string; description: string; category: string; icon: ComponentProps<typeof Icon>['name']; color: 'purple' | 'coral' | 'gold'; component: ComponentType<{ mode: 'daily' | 'practice'; muted: boolean }> };
+export type StudioGame = { id: string; title: string; description: string; category: string; icon: ComponentProps<typeof Icon>['name']; color: 'purple' | 'coral' | 'gold'; component: ComponentType<{ mode: 'daily' | 'practice'; muted: boolean; paused?: boolean }> };
 const additions = import.meta.glob<{ default: StudioGame }>('./features/*/studio-game.ts', { eager: true });
 export const games: StudioGame[] = [
  { id: 'memory', title: 'You’re Absolutely Right!', description: 'Find your matching agents. An exercise in agreeable thinking.', category: 'Memory', icon: 'grid', color: 'purple', component: MemoryGame },

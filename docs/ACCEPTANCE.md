@@ -8,10 +8,10 @@ Tests cover paired-board counts/blanks, deterministic dates, ranking, corrupt/un
 
 ## Browser
 
-- Chat composer and suggestions start the mock agent; invitation and sidebar open the game library and its three games. There is no separate Art Studio route or sidebar item.
+- Chat composer and suggestions start the mock agent; the invitation opens games inside the conversation; the sidebar opens full game pages. There is no separate Art Studio route or sidebar item.
 - Agent completion leaves the drawing surface in place and does not navigate away from a game.
 - Memory reveals blanks, locks mismatches, completes boards and advances; cards flip smoothly, matched pairs celebrate, and the previous score survives reload. The board can use all 24 authored SVG faces.
-- Typing accepts correct characters, fails at first incorrect character, blocks paste, supports composed committed input and stops at deadline. Finish is disabled before input.
+- Typing has exactly 15 words and a 30-second cap in either mode. It auto-completes at the final word, fails at the first incorrect character, blocks paste, supports composed committed input and stops at the active-play deadline. Finish is disabled before input.
 - Circle hides target after three seconds; pointer release scores, cancel aborts, zero-radius scores zero; keyboard controls work. Classic, Forest and Moon environments are selectable from the in-game collapsible settings while preserving the chair, board/screen and briefcase composition.
 - Circle 95+ displays Pope Tibo; daily earns one reset; repeat success does not duplicate the balance; practice never awards resets.
 - Sidebar profile wallet updates and persists across reload.
@@ -44,7 +44,7 @@ Tests cover paired-board counts/blanks, deterministic dates, ranking, corrupt/un
 ## Prompt-to-game demo flow
 
 - Sending a typed prompt, pressing Enter, or using a suggestion starts one mock task and shows a collapsed **Fancy a game while you wait?** ghost button. Follow-up prompts keep the same played-today state.
-- Expanding the invitation reveals all three games. One click on a card launches its daily game; the mock continues without restarting. The invitation collapses again on a second click.
+- Expanding the invitation reveals all three games. One click on a card opens its daily game inside the chat; the mock continues without restarting. Minimise pauses the game into a pixel pet, and the pet resumes that same round.
 - Starting actual play records the game for the UTC day, in either mode. Merely visiting a route does not. Valid older daily scores also count.
 - All three games appear as rounded icon cards, with unplayed games first and only the icon and game title visible. Sidebar access remains available. The list refreshes at UTC midnight and after play in another tab.
 - Blocked storage retains play history for the current visit without interrupting a game. Invalid records are ignored.
@@ -61,3 +61,5 @@ Tests cover paired-board counts/blanks, deterministic dates, ranking, corrupt/un
 - Verified the rounded cards at desktop and 390px and the cumulative five-line four-pair celebration. Browser console stayed clear.
 
 - Latest invitation: desktop and 390px checked with slim icon/title cards, no category or replay footer, and no ×. Keyboard expansion/collapse and launch work; expanded choices remain open at mock completion. Production build and 22 committed rule/API tests pass.
+
+- Inline-game verification: desktop and 390px layouts checked. Memory retained its revealed card and elapsed time while minimised; typing retained its input and 30-second timer after more than 30 seconds hidden, then auto-finished with 15 completed words. Circle resumed its three-second reveal and scored a pointer-drawn attempt inside chat. Next-game actions stayed on #chat. Independent review confirmed delayed result animations pause correctly. Browser console errors: none.
