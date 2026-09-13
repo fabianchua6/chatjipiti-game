@@ -42,7 +42,7 @@ Static production output is `dist/`. Fonts and game artwork are bundled locally.
 3. Expand the invitation, then click a game to play its daily challenge inside the chat. The sidebar still opens the full game pages.
 4. Games appear together as rounded icon cards, with unplayed games first and only the icon and game title visible; Daily and Free Play both count. Minimise pauses the round into a small pixel pet; click the pet to resume. The mock keeps running while you play.
 5. After 30 seconds the agent announces completion, keeping the game in place.
-6. Score 90+ on the daily circle to see Pope Tibo and bank one simulated reset.
+6. Score 90+ on any circle round to see Pope Tibo and earn a demo Codex reset. Every winning round counts.
 
 ## Games
 

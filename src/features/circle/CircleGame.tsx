@@ -8,7 +8,7 @@ import type { PointerEvent } from 'react';
 import { dailySeed } from '../../lib/game';
 import { CIRCLE_BOARD_ASPECT, circleTarget, constrainCircle, scoreCircle } from '../../lib/challenges';
 import type { Circle, CircleScore, GameMode } from '../../lib/challenges';
-import { claimResetSafely, isScore, readRecord, writeRecord } from '../../lib/records';
+import { awardDemoReset, isScore, readRecord, writeRecord } from '../../lib/records';
 import { playSound } from '../../lib/sound';
 import Icon from '../../components/Icon';
 import './circle.css';
@@ -20,7 +20,6 @@ import { useArtLibrary } from '../../lib/appearance';
 import type { CSSProperties } from 'react';
 
 type Phase = 'idle' | 'reveal' | 'draw' | 'result';
-type Reward = 'earned' | 'claimed' | 'unavailable' | null;
 export default function CircleGame({ mode, muted, paused = false }: { mode: GameMode; muted: boolean; paused?: boolean }) {
   const clock = useGameClock(paused);
   const revealUntil = useRef(0);
@@ -31,7 +30,6 @@ export default function CircleGame({ mode, muted, paused = false }: { mode: Game
   const [drawn, setDrawn] = useState<Circle | null>(null);
   const [score, setScore] = useState<CircleScore | null>(null);
   const [countdown, setCountdown] = useState(3);
-  const [reward, setReward] = useState<Reward>(null);
   const [saved, setSaved] = useState(true);
   const [hint, setHint] = useState('');
   const stage = useRef<SVGSVGElement>(null);
@@ -40,7 +38,7 @@ export default function CircleGame({ mode, muted, paused = false }: { mode: Game
   const activePointer = useRef<number | null>(null);
   const stroke = useRef<Circle | null>(null);
   const submitted = useRef(false);
-  const attempt = useRef(0);
+  const roundId = useRef('');
   const stopBlessing = useRef<() => void>(() => {});
   useEffect(() => () => stopBlessing.current(), []);
   useEffect(() => { if (muted || paused) stopBlessing.current(); }, [muted, paused]);
@@ -72,11 +70,11 @@ export default function CircleGame({ mode, muted, paused = false }: { mode: Game
     revealUntil.current = clock.now() + 3000;
     stopBlessing.current();
     markPlayed('circle');
-    attempt.current++;
+    roundId.current = crypto.randomUUID();
     const nextSeed = mode === 'daily' ? dailySeed() : crypto.randomUUID();
     // Keep daily records tied to the date; give every attempt a fresh target.
     setSeed(nextSeed); setTarget(circleTarget(undefined, CIRCLE_BOARD_ASPECT));
-    setDrawn(null); setScore(null); setReward(null); setSaved(true); setCountdown(3);
+    setDrawn(null); setScore(null); setSaved(true); setCountdown(3);
     activePointer.current = null; stroke.current = null; submitted.current = false;
     setHint('Look closely. Centre and size. Three seconds.'); setPhase('reveal');
     requestAnimationFrame(() => stage.current?.focus());
@@ -114,10 +112,7 @@ export default function CircleGame({ mode, muted, paused = false }: { mode: Game
     setDrawn(circle); setScore(result); setPhase('result');
     if (best === null || result.total > best) setSaved(writeRecord(recordKey, result.total));
     if (result.total >= 90) {
-      if (mode === 'daily') {
-        const finishedAttempt = attempt.current;
-        void claimResetSafely(seed).then(value => { if (finishedAttempt === attempt.current) setReward(value); });
-      }
+      awardDemoReset(roundId.current);
       stopBlessing.current();
       stopBlessing.current = playCircleBlessing(muted);
     } else playSound('match', muted);
@@ -156,7 +151,7 @@ export default function CircleGame({ mode, muted, paused = false }: { mode: Game
         {blessed && <TiboBlessing paused={paused}/>}
         </div>
         <div className="circle-console" role="group" aria-label={score ? 'Round result and actions' : 'Tibo’s instructions and game controls'}>
-          {score ? <CircleResult score={score} best={best} mode={mode} reward={reward} saved={saved} onRestart={start}/> : <>
+          {score ? <CircleResult score={score} best={best} saved={saved} onRestart={start}/> : <>
             {phase === 'idle' && <div className="tibo-dialogue"><span>TIBO</span><p>“Draw me a yellow circle.”</p></div>}
             <p id="circle-instructions" className="circle-hint" role="status">{phase === 'idle' ? 'Memorise the circle. You have 3 seconds.' : phase === 'reveal' ? 'Remember its centre and size.' : hint}</p>
             {phase === 'idle' && <button className="primary" onClick={start}>Show me the circle <Keycap>Space</Keycap></button>}

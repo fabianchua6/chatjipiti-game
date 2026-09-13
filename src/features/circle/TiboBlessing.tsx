@@ -36,6 +36,6 @@ export default function TiboBlessing({ paused = false }: { paused?: boolean }) {
       left: token.left, '--token-delay': token.delay, '--token-duration': token.duration,
       '--token-drift': token.drift, '--token-spin': token.spin, '--token-size': token.size,
     } as CSSProperties}><span><TokenMark/></span></span>)}</div>
-    <div className="blessing-proclamation"><strong>HALLELUJAH!</strong></div>
+    <div className="blessing-proclamation"><span>HALLELUJAH!</span><strong>CODEX RESET<br/>BLESSED</strong><span>+1 DEMO RESET</span></div>
   </div>;
 }

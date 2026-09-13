@@ -14,7 +14,10 @@
 .circle-score-breakdown dd>span {margin-left:2px;font-size:12px;color:#c4b999}
 .circle-round-best {margin:12px 0 0;font-size:12px;line-height:1.5;color:#c4b999}
 .circle-round-best strong {margin-left:6px;color:#eee5c9;font-weight:500}
-.circle-round-reward {display:flex;align-items:flex-start;gap:8px;margin:18px 0 0;font-size:12px;line-height:1.6;color:#ffdf83}
+.circle-round-reward {display:flex;align-items:flex-start;gap:10px;margin:18px 0 0;padding-top:16px;border-top:1px solid #6d5729;font-size:12px;line-height:1.6;color:#ffdf83}
+.circle-round-reward>div {display:grid;gap:8px;min-width:0}
+.circle-round-reward strong {font-family:'Press Start 2P',monospace;font-size:11px;line-height:1.8;color:#ffe590;text-shadow:0 2px 12px #dc9e3655}
+.circle-round-reward span {color:#e9d39b}
 .circle-round-reward>.icon {flex:0 0 16px;width:16px;height:16px;margin-top:2px}
 .circle-save-error {font-size:12px;line-height:1.5;color:#ffbaa8;margin-top:12px}
 .circle-console .circle-round-actions {display:grid;grid-template-columns:1fr;gap:8px;margin:22px 0 0}

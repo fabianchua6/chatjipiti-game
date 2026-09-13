@@ -18,17 +18,32 @@ export function saveTypingRecord(key: string, result: TypingRecord): boolean {
   if (previous && (previous.correct > result.correct || previous.correct === result.correct && previous.wpm >= result.wpm)) return true;
   return writeRecord(key, result);
 }
-// Derive balance from one immutable key per UTC day. Two tabs cannot double-credit.
+// Keep previous daily rewards; demo wins now use one immutable key per round.
 const REWARD_PREFIX = `${PREFIX}circle-reset:`;
+const DEMO_REWARD_PREFIX = `${PREFIX}circle-demo-reset:`;
+const ROUND_ID = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i;
+const sessionRewards = new Set<string>();
+
+export function awardDemoReset(roundId: string): void {
+  if (!ROUND_ID.test(roundId)) return;
+  const key = DEMO_REWARD_PREFIX + roundId;
+  if (sessionRewards.has(key)) return;
+  sessionRewards.add(key);
+  try { localStorage.setItem(key, 'claimed'); } catch { /* The reward still counts for this demo session. */ }
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event('chatjipiti:wallet'));
+}
 export function resetBalance(): number {
+  const rewards = new Set(sessionRewards);
   try {
-    let balance = 0;
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key?.startsWith(REWARD_PREFIX) && /^\d{4}-\d{2}-\d{2}$/.test(key.slice(REWARD_PREFIX.length)) && localStorage.getItem(key) === 'claimed') balance++;
+      if (!key || localStorage.getItem(key) !== 'claimed') continue;
+      const daily = key.startsWith(REWARD_PREFIX) && /^\d{4}-\d{2}-\d{2}$/.test(key.slice(REWARD_PREFIX.length));
+      const demo = key.startsWith(DEMO_REWARD_PREFIX) && ROUND_ID.test(key.slice(DEMO_REWARD_PREFIX.length));
+      if (daily || demo) rewards.add(key);
     }
-    return balance;
-  } catch { return 0; }
+  } catch { /* Session rewards remain available when browser storage is blocked. */ }
+  return rewards.size;
 }
 export function claimDailyReset(day: string): 'earned' | 'claimed' | 'unavailable' {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return 'unavailable';

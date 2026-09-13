@@ -18,7 +18,7 @@ React, TypeScript and Vite; client-only state and localStorage, no backend crede
 
 - ChatGPT-style dark chat home, working mock composer, sidebar game library and individual games.
 - Sending a prompt starts a scripted 30-second task. The ghost invitation expands to slim game cards; choosing one starts a compact playable window inside the chat. Minimise pauses the round into a pixel pet; clicking the pet resumes it. Task completion preserves the game.
-- User nickname, local best scores and simulated banked Astra reset wallet.
+- User nickname, local best scores and simulated Codex reset reward wallet.
 - All three games with daily seeded challenges and unlimited Free Play.
 - The project is solo. There is no collaborator assignment or Rachiket invitation.
 - Sign-in, model responses, running-agent state and usage rewards are explicitly simulated. No real account quota is modified.
@@ -41,14 +41,14 @@ A generated pixel-art room follows the supplied stage reference: a large dark sc
 
 Position and radius each contribute 50 points. Position falls linearly to zero at a distance of two target radii; size falls linearly to zero at a radius error equal to the target radius. A zero-radius stroke scores zero. At 90+, Pope Tibo descends and a synthesized chord plays when sound is enabled.
 
-Daily 90+ earns one simulated reset per UTC date. Claim markers determine balance, so rerenders, repeat attempts and reopening cannot increment the same date. Web Locks serialize claims across tabs where supported; balance remains one key per date even without locks. Practice grants a celebration but no wallet credit.
+Every circle score of 90+ earns one demo Codex reset in either mode, including repeat attempts. A unique round ID prevents duplicate submissions from crediting the same round twice. Existing daily rewards remain in the wallet; new rewards persist per round, with a session fallback when browser storage is unavailable. Every win shows the golden “CODEX RESET BLESSED” celebration.
 
 ## Provisional decisions for this version
 
 - Dark ChatGPT-style shell, rather than the former standalone arcade home.
 - Daily challenges are repeatable and show device-local best scores, not a global leaderboard.
 - Daily rollover is midnight UTC.
-- Simulated reset rewards are Daily-only and limited to one per day.
+- Simulated reset rewards repeat on every qualifying round in Daily and Free Play.
 - Agent demo uses a scripted 75-second run and preserves its banner height at completion.
 - Audio starts enabled on every visit; the mute button applies to the current session.
 
