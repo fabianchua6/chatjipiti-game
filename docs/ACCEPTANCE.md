@@ -48,8 +48,10 @@ Tests cover paired-board counts/blanks, deterministic dates, ranking, corrupt/un
 - Starting actual play records the game for the UTC day, in either mode. Merely visiting a route does not. Valid older daily scores also count.
 - Played games remain available as compact replay links and through the sidebar. The list refreshes at UTC midnight and after play in another tab.
 - Blocked storage retains play history for the current visit without interrupting a game. Invalid records are ignored.
-- Memory celebrates the first pair with “YOU’RE ABSOLUTELY RIGHT”, then changes AI clichés on consecutive matches. A blank or mismatch resets the streak.
+- Memory celebrates the first pair with “YOU’RE ABSOLUTELY RIGHT”, then adds increasingly extravagant modifiers on consecutive matches. Each word appears on its own line; long modifiers scale down to fit. A blank or mismatch resets the streak.
 
 - Verified locally: desktop and 390px inline choices, keyboard launch, route-only visits remaining unplayed, first flip moving Memory to Replay, and 30-second completion preserving the flow.
-- Verified consecutive Memory matches show the original phrase, “GREAT QUESTION”, and “LET’S DELVE DEEPER”; revealing a blank restores the original phrase for the next match. No browser console errors were observed.
+- The initial streak check covered varied phrases; the updated sequence keeps “YOU’RE ABSOLUTELY … RIGHT” throughout; revealing a blank restores the original phrase for the next match. No browser console errors were observed.
 - Updated committed suite: 22 tests pass; production build passes. React Doctor reports no errors and nine existing warnings; its remote score was unavailable.
+
+- Revised wording verified on desktop and a 320px phone viewport: YOU’RE / ABSOLUTELY / RIGHT, then ASTRONOMICALLY and INTERGALACTICALLY on an added line. Long words fit without wrapping. Longer streaks hold INFINITELY rather than cycling back down.

@@ -44,7 +44,7 @@ npm run build
 
 ## Games
 
-- **You’re Absolutely Right!** — 3×3 to 6×6 memory boards; fixed Astra poster backs and 24 authored SVG geometric faces; one unmatchable blank on odd boards; smooth flips, cosmic matched-pair celebrations with escalating AI clichés on a streak, time and moves. Appearance choices and optional generation live in a small collapsible settings panel inside the game.
+- **You’re Absolutely Right!** — 3×3 to 6×6 memory boards; fixed Astra poster backs and 24 authored SVG geometric faces; one unmatchable blank on odd boards; smooth flips, cosmic matched-pair celebrations that grow from “YOU’RE ABSOLUTELY RIGHT” to “YOU’RE ABSOLUTELY ASTRONOMICALLY RIGHT” and beyond on a streak, time and moves. Appearance choices and optional generation live in a small collapsible settings panel inside the game.
 - **Make No Mistakes** — inline pixel-text input; one wrong character ends the run; Daily 60s / Free Play 300s; seeded progressive phrases; local character/WPM records; IME-aware committed input; paste blocked.
 - **Draw Me a Yellow Circle** — three-second target reveal, press-centre/drag-radius/release submission, position and size scoring; mouse, touch and keyboard; retro wood-room stage, generated Pope Tibo parody and daily reward wallet. Classic, Forest and Moon environments are selectable from the in-game settings panel.
 

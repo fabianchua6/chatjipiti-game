@@ -4,23 +4,25 @@ export type MatchPhrase = {
   announcement: string;
 };
 
-const original: MatchPhrase = {
-  eyebrow: 'YOU’RE',
-  headline: ['ABSOLUTELY', 'RIGHT'],
-  announcement: "You're absolutely right!",
-};
-
-const streakPhrases: readonly MatchPhrase[] = [
-  { eyebrow: 'GREAT', headline: ['QUESTION'], announcement: 'Great question!' },
-  { eyebrow: 'LET’S', headline: ['DELVE', 'DEEPER'], announcement: "Let's delve deeper!" },
-  { eyebrow: 'YOU’RE', headline: ['ONTO', 'SOMETHING'], announcement: "You're onto something!" },
-  { eyebrow: 'LET’S', headline: ['UNPACK', 'THAT'], announcement: "Let's unpack that!" },
-  { eyebrow: 'AS AN', headline: ['AI', 'MODEL'], announcement: 'As an AI model, I agree!' },
-  { eyebrow: 'HAPPY', headline: ['TO', 'HELP'], announcement: 'Happy to help!' },
-];
+const amplifiers = [
+  '',
+  'ASTRONOMICALLY',
+  'INTERGALACTICALLY',
+  'MULTIVERSALLY',
+  'OMNIVERSALLY',
+  'TRANSCENDENTALLY',
+  'UNFATHOMABLY',
+  'INFINITELY',
+] as const;
 
 export function getMatchPhrase(combo: number): MatchPhrase {
-  const safeCombo = Math.max(1, Math.floor(combo));
-  if (safeCombo === 1) return original;
-  return streakPhrases[(safeCombo - 2) % streakPhrases.length];
+  const safeCombo = Number.isFinite(combo) ? Math.max(1, Math.floor(combo)) : 1;
+  // Hold the biggest superlative on long streaks instead of cycling back down.
+  const amplifier = amplifiers[Math.min(safeCombo - 1, amplifiers.length - 1)];
+  const headline = ['ABSOLUTELY', ...(amplifier ? [amplifier] : []), 'RIGHT'];
+  return {
+    eyebrow: 'YOU’RE',
+    headline,
+    announcement: `You're ${headline.join(' ').toLowerCase()}!`,
+  };
 }
