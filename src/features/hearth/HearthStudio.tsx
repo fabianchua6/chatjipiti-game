@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import Icon from '../../components/Icon';
 import './hearth.css';
 
-const HEARTH_URL = 'https://hearth-agent-office.rachiketarya.chatgpt.site/';
+const CONSTELLATION_URL = 'https://constellation-agent-studio.fabianchua6.chatgpt.site/';
 
 export function HearthMark() {
-  return <svg className="icon hearth-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M13 3c1 5-4 6-2 10 1-1 2-3 2-4 4 3 6 5 6 8a7 7 0 0 1-14 0c0-4 3-6 3-9 1 1 2 2 2 3 0-3 3-5 3-8Z"/></svg>;
+  return <svg className="icon hearth-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3c.8 5.2 3.8 8.2 9 9-5.2.8-8.2 3.8-9 9-.8-5.2-3.8-8.2-9-9 5.2-.8 8.2-3.8 9-9Z"/></svg>;
 }
 
 const teammates = [
@@ -40,7 +40,7 @@ function OfficePreview() {
       </g>)}
       <path d="M634 44v21m-8-9 8 4 8-10" stroke="#9aa77b" strokeWidth="6" strokeLinecap="round"/><rect x="626" y="66" width="17" height="12" rx="2" fill="#9c7b59"/>
     </svg>
-    <div className="hearth-preview-open"><a href={HEARTH_URL} target="_blank" rel="noopener noreferrer">Open App Studio <Icon name="chevron"/></a><p>The shared office opens in a new tab.</p></div>
+    <div className="hearth-preview-open"><a href={CONSTELLATION_URL} target="_blank" rel="noopener noreferrer">Open App Studio <Icon name="chevron"/></a><p>The shared office opens in a new tab.</p></div>
   </div>;
 }
 
@@ -62,7 +62,7 @@ function StudioFrame() {
   }
   return <div className={`hearth-frame ${ready ? 'is-ready' : ''}`}>
     {!ready && <OfficePreview/>}
-    <iframe ref={frame} src={HEARTH_URL} title="App Studio collaborative agent office" tabIndex={ready ? 0 : -1} aria-hidden={!ready} onLoad={onLoad} onError={() => setFailed(true)} sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads"/>
+    <iframe ref={frame} src={CONSTELLATION_URL} title="Constellation collaborative agent studio" tabIndex={ready ? 0 : -1} aria-hidden={!ready} onLoad={onLoad} onError={() => setFailed(true)} sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads"/>
     {failed && !ready && <span className="hearth-embed-note" role="status">Open the studio in a new tab to continue.</span>}
   </div>;
 }
@@ -72,9 +72,9 @@ export default function HearthStudio({ active, onPlay }: { active: boolean; onPl
   return <section className="hearth-studio" hidden={!active} inert={!active} aria-label="App Studio">
     <header className="hearth-heading">
       <div className="hearth-title"><HearthMark/><div><h1>App Studio</h1><p>Build together. Games, mini apps, and your next idea.</p></div></div>
-      <div className="hearth-actions"><button className="text-button" onClick={onPlay}><Icon name="games"/>Play games</button><a href={HEARTH_URL} target="_blank" rel="noopener noreferrer">Open in new tab <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 3h7v7m0-7L10 14M10 4H4v16h16v-6"/></svg></a></div>
+      <div className="hearth-actions"><button className="text-button" onClick={onPlay}><Icon name="games"/>Play games</button><a href={CONSTELLATION_URL} target="_blank" rel="noopener noreferrer">Open in new tab <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 3h7v7m0-7L10 14M10 4H4v16h16v-6"/></svg></a></div>
     </header>
     <StudioFrame key={frameVersion}/>
-    <footer className="hearth-footer"><span>Powered by Hearth · Your shared agent workspace.</span><button className="text-button" onClick={() => setFrameVersion(version => version + 1)}><Icon name="reset"/>Reload studio</button></footer>
+    <footer className="hearth-footer"><span>Powered by Constellation · Your shared agent workspace.</span><button className="text-button" onClick={() => setFrameVersion(version => version + 1)}><Icon name="reset"/>Reload studio</button></footer>
   </section>;
 }
