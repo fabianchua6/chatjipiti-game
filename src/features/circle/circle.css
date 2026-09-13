@@ -1,2 +1,46 @@
-.circle-game{--accent:#ffdb69}.circle-layout{margin-top:24px}.circle-play{min-width:0}.circle-stage-label{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;font-family:'Press Start 2P',monospace;font-size:9px;line-height:1.8;color:#e2d9b6}.circle-stage-label b{font-size:18px;color:#ffda63}.retro-room{position:relative;aspect-ratio:3/2;background:#3e2b1a url('/circle-room.png') center/100% 100% no-repeat;image-rendering:pixelated;border:3px solid #806340;box-shadow:4px 4px 0 #111;overflow:hidden}.circle-canvas{position:absolute;left:12.7%;top:8%;width:46%;aspect-ratio:1}.drawing-surface{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair;outline-offset:-5px!important}.circle-game .primary{background:#ffdb69;color:#302608;border-radius:2px;box-shadow:3px 3px 0 #111}.circle-hint{font-size:.875rem;color:#cfc9b5;min-height:44px;margin:16px 0}.circle-legend{display:flex;gap:20px;justify-content:center;margin-top:14px;font-size:.8rem;color:#d2ccbd}.circle-legend span{display:flex;align-items:center;gap:8px}.legend-line{width:22px;border-top:2px solid}.yellow-line{border-color:#ffda63}.target-line{border-color:#f2eee3;border-top-style:dashed}.tibo-sprite.pope{position:absolute;left:65%;top:0;width:35%;aspect-ratio:3/4;background-image:url('/pope-tibo.png');background-size:200% 100%;background-position:right center;background-repeat:no-repeat;image-rendering:pixelated;pointer-events:none;animation:descend 1.8s cubic-bezier(.16,1,.3,1)}.tibo-dialogue{padding:18px 20px;background:#1b1c17;border:2px solid #665c3e;margin-top:13px;font-family:'Press Start 2P',monospace;line-height:2}.tibo-dialogue>span{font-size:8px;color:#d0b974}.tibo-dialogue p{font-size:10px;line-height:2;margin-top:5px;color:#f1e8c9}.keyboard-help{margin-top:22px;font-size:.8rem;color:#bcb9ad;line-height:1.6}.keyboard-help summary{cursor:pointer;min-height:30px}.keyboard-help p{margin-top:8px}.circle-result small{font-size:.85rem;color:#ccc;font-weight:400}.circle-result{margin-top:28px}.divine-result{background:#34301e!important;border-color:#ab9149!important}.reset-reward{display:grid;grid-template-columns:24px 1fr;align-items:center;gap:10px;color:#ffe295;margin-top:20px}.reset-reward p{grid-column:2;font-size:.875rem;color:#d3cba9}.reset-reward strong{font-size:.95rem}@keyframes descend{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}@media(max-width:600px){.retro-room{margin-inline:-8px}.circle-stage-label{font-size:8px}.tibo-dialogue{padding:12px 14px}.tibo-dialogue p{font-size:9px}}@media(prefers-reduced-motion:reduce){.tibo-sprite{animation:none!important}}
+.circle-game{--accent:#ffdb69}.circle-layout{margin-top:24px}.circle-play{min-width:0}.circle-stage-label{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;font-family:'Press Start 2P',monospace;font-size:9px;line-height:1.8;color:#e2d9b6}.circle-stage-label b{font-size:18px;color:#ffda63}.retro-room{position:relative;aspect-ratio:3/2;background:#3e2b1a url('/circle-room.png') center/100% 100% no-repeat;image-rendering:pixelated;border:3px solid #806340;box-shadow:4px 4px 0 #111;overflow:hidden}.circle-canvas{position:absolute;left:7.9%;top:8.1%;width:56.8%;aspect-ratio:1.26}.drawing-surface{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair;outline-offset:-5px!important}.circle-game .primary{background:#ffdb69;color:#302608;border-radius:2px;box-shadow:3px 3px 0 #111}.circle-hint{font-size:.875rem;color:#cfc9b5;min-height:44px;margin:16px 0}.circle-legend{display:flex;gap:20px;justify-content:center;margin-top:14px;font-size:.8rem;color:#d2ccbd}.circle-legend span{display:flex;align-items:center;gap:8px}.legend-line{width:22px;border-top:2px solid}.yellow-line{border-color:#ffda63}.target-line{border-color:#f2eee3;border-top-style:dashed}.tibo-sprite.pope{position:absolute;left:65%;top:0;width:35%;aspect-ratio:3/4;background-image:url('/pope-tibo.png');background-size:200% 100%;background-position:right center;background-repeat:no-repeat;image-rendering:pixelated;pointer-events:none;animation:descend 1.8s cubic-bezier(.16,1,.3,1)}.tibo-dialogue{padding:18px 20px;background:#1b1c17;border:2px solid #665c3e;margin-top:13px;font-family:'Press Start 2P',monospace;line-height:2}.tibo-dialogue>span{font-size:8px;color:#d0b974}.tibo-dialogue p{font-size:10px;line-height:2;margin-top:5px;color:#f1e8c9}.keyboard-help{margin-top:22px;font-size:.8rem;color:#bcb9ad;line-height:1.6}.keyboard-help summary{cursor:pointer;min-height:30px}.keyboard-help p{margin-top:8px}.circle-result small{font-size:.85rem;color:#ccc;font-weight:400}.circle-result{margin-top:28px}.divine-result{background:#34301e!important;border-color:#ab9149!important}.reset-reward{display:grid;grid-template-columns:24px 1fr;align-items:center;gap:10px;color:#ffe295;margin-top:20px}.reset-reward p{grid-column:2;font-size:.875rem;color:#d3cba9}.reset-reward strong{font-size:.95rem}@keyframes descend{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}@media(max-width:600px){.retro-room{margin-inline:-8px}.circle-stage-label{font-size:8px}.tibo-dialogue{padding:12px 14px}.tibo-dialogue p{font-size:9px}}@media(prefers-reduced-motion:reduce){.tibo-sprite{animation:none!important}}
 .drawing-surface:focus{outline:none!important}.retro-room:has(.drawing-surface:focus-visible){outline:2px solid #e7cf83;outline-offset:3px}
+
+/* The scene and dialogue console share one arcade frame. */
+.circle-play{border:2px solid #806340;border-radius:4px;background:#191c16;box-shadow:4px 4px 0 #111;overflow:hidden}
+.circle-play .circle-stage-label{min-height:42px;padding:8px 16px;border-bottom:1px solid #665c3e;background:#20221a}
+.circle-play .retro-room{margin:0;border:0;box-shadow:none}
+.circle-console{padding:20px;background:#1b1e17;border-top:3px solid #806340;box-shadow:inset 0 2px 0 #302e21;color:#eee6cc}
+.circle-console-top{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.circle-console .tibo-dialogue{flex:1;min-width:0;padding:0;border:0;margin:0;background:none}
+.circle-console .tibo-dialogue>span{display:block;font-size:9px;color:#e8c774}
+.circle-console .tibo-dialogue p{margin:8px 0 0;line-height:1.9;color:#fff0c9}
+.circle-console-best{display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0;margin:0;color:#cfc4a5;font-size:12px;line-height:1.4}
+.circle-console-best strong{color:#ffdc7c;font-size:20px;font-variant-numeric:tabular-nums}
+.circle-console-best small{font-size:12px;font-weight:400;color:#cfc4a5}
+.circle-console-main{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px}
+.circle-console .circle-hint{flex:1;min-width:0;min-height:0;margin:0;font-size:13px;line-height:1.6;color:#dfd5b8}
+.circle-console-main>.primary{flex-shrink:0;min-height:44px;font-size:13px;padding:10px 14px}
+.circle-console-main .button-row{flex-shrink:0;gap:8px;margin:0}
+.circle-console-main .button-row>[data-round-action]{min-height:44px;padding:10px 12px;font-size:13px}
+.circle-console .circle-legend{justify-content:flex-start;gap:20px;margin:16px 0 0;font-size:12px}
+.circle-console .keyboard-legend{gap:10px 16px;margin:16px 0 0;padding:12px 0 0;border:0;border-top:1px solid #55503a;border-radius:0;background:none;color:#e1d9c0}
+.circle-console .keyboard-legend-title{font-size:12px;color:#e1d9c0}
+.circle-console .keyboard-legend ul{gap:10px 16px}
+.circle-console .keyboard-legend-note{color:#cfc4a5}
+.circle-console .keyboard-key{border-color:#82744b;background:#333222;color:#fff0c9;box-shadow:0 1px 0 #11140e}
+.circle-console .primary>.keyboard-key{border-color:#75602d;background:transparent;color:inherit;box-shadow:none}
+.circle-console-rule{margin:12px 0 0;font-size:12px;line-height:1.5;color:#c6bc9f}
+@media(max-width:600px){.circle-play .circle-stage-label{padding:8px 12px}.circle-console{padding:16px 12px}.circle-console-top{gap:12px;align-items:flex-start}.circle-console .tibo-dialogue p{font-size:9px;line-height:2}.circle-console-best{font-size:11px}.circle-console-best strong{font-size:18px}.circle-console-main{flex-wrap:wrap;gap:12px;margin-top:12px}.circle-console-main .circle-hint{flex-basis:100%}.circle-console-main .button-row{flex-shrink:1;flex-wrap:wrap}.circle-console .keyboard-legend-title{flex-basis:auto}}
+
+.circle-layout{container-type:inline-size}
+@container (min-width:760px){
+  .circle-play{display:grid;grid-template-columns:minmax(0,1fr) 252px;grid-template-areas:"status status" "scene controls";align-items:start}
+  .circle-play .circle-stage-label{grid-area:status}
+  .circle-play .retro-room{grid-area:scene;width:100%}
+  .circle-console{grid-area:controls;align-self:stretch;padding:16px;border-top:0;border-left:1px solid #806340;box-shadow:none}
+  .circle-console-top{flex-direction:column;align-items:flex-start;gap:12px}
+  .circle-console-best{flex-direction:row;align-items:baseline;gap:8px}
+  .circle-console-best strong{font-size:18px}
+  .circle-console-main{flex-direction:column;align-items:stretch;gap:12px}
+  .circle-console-main .button-row{flex-wrap:wrap;justify-content:flex-start}
+  .circle-console-main .button-row>[data-round-action]{flex:1}
+  .circle-console .keyboard-legend-title{flex-basis:100%}
+  .circle-console .keyboard-legend ul{flex-basis:100%}
+  .circle-console .keyboard-legend li{font-size:12px}
+}

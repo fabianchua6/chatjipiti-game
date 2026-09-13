@@ -1,6 +1,6 @@
-import test from 'node:test';
+import test, { mock } from 'node:test';
 import assert from 'node:assert/strict';
-import { circleTarget, compareTyping, constrainCircle, scoreCircle, typingMetrics, typingPassage, TYPING_WORD_LIMIT } from './challenges.ts';
+import { CIRCLE_BOARD_ASPECT, circleTarget, compareTyping, constrainCircle, scoreCircle, typingMetrics, typingPassage, TYPING_WORD_LIMIT } from './challenges.ts';
 import { claimDailyReset, resetBalance, isScore, isTypingRecord, saveTypingRecord, readRecord } from './records.ts';
 
 test('typing challenge is deterministic, varied and short enough for a quick round', () => {
@@ -81,4 +81,46 @@ test('daily wallet is derived from unique claims and survives repeated attempts'
     if (descriptor) Object.defineProperty(globalThis, 'localStorage', descriptor); else Reflect.deleteProperty(globalThis, 'localStorage');
     if (windowDescriptor) Object.defineProperty(globalThis, 'window', windowDescriptor); else Reflect.deleteProperty(globalThis, 'window');
   }
+});
+
+test('circle targets reach every edge region of the wide board without clipping', () => {
+  const targets = Array.from({ length: 1000 }, (_, index) => circleTarget(`wide:${index}`, CIRCLE_BOARD_ASPECT));
+  for (const target of targets) {
+    assert.ok(target.x - target.radius / CIRCLE_BOARD_ASPECT >= 0);
+    assert.ok(target.x + target.radius / CIRCLE_BOARD_ASPECT <= 1);
+    assert.ok(target.y - target.radius >= 0 && target.y + target.radius <= 1);
+  }
+  assert.ok(targets.some(target => target.x < .2));
+  assert.ok(targets.some(target => target.x > .8));
+  assert.ok(targets.some(target => target.y < .2));
+  assert.ok(targets.some(target => target.y > .8));
+});
+test('wide-board scoring gives equal physical horizontal and vertical errors equal scores', () => {
+  const target = { x: .5, y: .5, radius: .2 };
+  const horizontal = scoreCircle(target, { ...target, x: .5 + .1 / CIRCLE_BOARD_ASPECT }, CIRCLE_BOARD_ASPECT);
+  const vertical = scoreCircle(target, { ...target, y: .6 }, CIRCLE_BOARD_ASPECT);
+  assert.deepEqual(horizontal, vertical);
+  const constrained = constrainCircle({ x: .9, y: .5, radius: .8 }, CIRCLE_BOARD_ASPECT);
+  assert.ok(Math.abs(constrained.radius - .1 * CIRCLE_BOARD_ASPECT) < 1e-10);
+});
+
+test('new circle attempts use fresh targets even on the same day', () => {
+  let sequence = 0;
+  const uuid = mock.method(globalThis.crypto, 'randomUUID', () => `00000000-0000-4000-8000-${String(++sequence).padStart(12, '0')}`);
+  try {
+    const first = circleTarget();
+    const second = circleTarget();
+    assert.notDeepEqual({ x: first.x, y: first.y }, { x: second.x, y: second.y });
+    assert.notEqual(first.radius, second.radius);
+    const targets = Array.from({ length: 1000 }, () => circleTarget());
+    for (const target of targets) {
+      assert.ok(target.x - target.radius > 0 && target.x + target.radius < 1);
+      assert.ok(target.y - target.radius > 0 && target.y + target.radius < 1);
+    }
+    for (const xSide of [false, true]) for (const ySide of [false, true]) {
+      assert.ok(targets.some(target => (target.x < .5) === xSide && (target.y < .5) === ySide));
+    }
+    assert.ok(targets.some(target => target.x < .2) && targets.some(target => target.x > .8));
+    assert.ok(targets.some(target => target.y < .2) && targets.some(target => target.y > .8));
+  } finally { uuid.mock.restore(); }
 });

@@ -1,5 +1,6 @@
 import { markPlayed } from '../../lib/playedToday';
 import { useEffect, useRef, useState } from 'react';
+import GameResultOverlay from '../../components/GameResultOverlay';
 import { dailySeed } from '../../lib/game';
 import { compareTyping, typingMetrics, typingPassage } from '../../lib/challenges';
 import type { GameMode } from '../../lib/challenges';
@@ -7,6 +8,8 @@ import { isTypingRecord, readRecord, saveTypingRecord } from '../../lib/records'
 import { playSound } from '../../lib/sound';
 import Icon from '../../components/Icon';
 import './typing.css';
+import GameRoundControls, { roundLegend, useRoundShortcuts } from '../../components/GameRoundControls';
+import KeyboardLegend, { Keycap } from '../../components/KeyboardLegend';
 
 type Phase = 'idle' | 'armed' | 'running' | 'finished';
 type Result = ReturnType<typeof typingMetrics> & { seconds: number; reason: string; expected: string | null; received: string | null };
@@ -127,10 +130,8 @@ export default function TypingGame({ mode, muted, paused = false }: TypingGamePr
       }
       if (isSpace(event) && startShortcutHeld.current) { event.preventDefault(); return; }
       if (event.repeat) return;
-      if (isSpace(event) && !active && !event.metaKey && !event.ctrlKey && !event.altKey) {
+      if (isSpace(event) && phase === 'idle' && !event.metaKey && !event.ctrlKey && !event.altKey) {
         event.preventDefault(); startShortcutHeld.current = true; startRef.current();
-      } else if (event.key === 'Escape' && !event.metaKey && !event.ctrlKey && !event.altKey) {
-        event.preventDefault(); startRef.current();
       } else if (event.key === 'Enter' && (event.metaKey || event.ctrlKey) && phase === 'running') {
         event.preventDefault(); finishRef.current('Run banked. Nicely done.');
       }
@@ -142,6 +143,10 @@ export default function TypingGame({ mode, muted, paused = false }: TypingGamePr
     window.addEventListener('blur', onBlur);
     return () => { window.removeEventListener('keydown', onKeyDown); window.removeEventListener('keyup', onKeyUp); window.removeEventListener('blur', onBlur); };
   }, [active, phase, paused]);
+  useRoundShortcuts('typing', Boolean(result) && !paused, () => {
+    startShortcutHeld.current = true;
+    start();
+  });
   const metrics = typingMetrics(passage.slice(0, correct), elapsed, correct === passage.length);
   const lookBehind = Math.max(0, correct - 18);
   return <section ref={surface} className="game-surface typing-game">
@@ -156,11 +161,14 @@ export default function TypingGame({ mode, muted, paused = false }: TypingGamePr
       <textarea ref={input} id="typing-input" onClick={event => { const field = event.currentTarget; field.setSelectionRange(field.value.length, field.value.length); }} rows={2} disabled={!active || paused} value={draft} onChange={event => { setDraft(event.target.value); if (!composing.current) accept(event.target.value); }} onCompositionStart={() => { composing.current = true; }} onCompositionEnd={event => { composing.current = false; accept(event.currentTarget.value); }} onPaste={event => { event.preventDefault(); setHint('No pasting. This one is all you.'); }} onDrop={event => event.preventDefault()} spellCheck={false} autoCorrect="off" autoComplete="off" autoCapitalize="none" inputMode="text" aria-describedby="typing-prompt typing-shortcuts" />
       </div>
       <div className="typing-status"><span aria-hidden="true">{active && !paused ? ">" : "·"}</span> {paused ? 'PAUSED · RESUME TO PLAY' : phase === 'armed' ? 'TYPE TO BEGIN' : phase === 'running' ? 'KEEP GOING_' : phase === 'finished' ? 'SPACE TO TRY AGAIN' : 'SPACE TO START'}</div>
+      {result && <GameResultOverlay game="typing" summary={`${result.correct} characters · ${result.wpm} WPM`} onReplay={start}/> }
     </div>
-    <p id="typing-shortcuts" className="typing-shortcuts"><span><kbd>Esc</kbd> restart</span><span><kbd>⌘ / Ctrl</kbd> + <kbd>Enter</kbd> finish</span></p>
     {hint && <p role="status" className="inline-notice">{hint}</p>}
-    {!active && !result && <button className="primary game-start" disabled={paused} onClick={start}>Start typing <kbd>Space</kbd></button>}
-    {active && <button className="secondary game-start" disabled={paused || phase === 'armed'} onClick={() => finish('Run banked. Nicely done.')}>Finish run</button>}
-    {result && <div className={`result ${result.received ? 'failure' : ''}`} role="status"><h2>{result.reason}</h2><div className="result-metrics"><span><strong>{result.correct}</strong> correct characters</span><span><strong>{result.words}</strong> completed words</span><span><strong>{result.wpm}</strong> WPM</span></div><p className="muted">{result.seconds}s played · {saved ? 'Best score saved on this device.' : 'Browser storage is unavailable; this result was not saved.'}</p><button className="primary" onClick={start}>Another run <kbd>Space</kbd></button></div>}
+    {!active && !result && <button className="primary game-start" disabled={paused} onClick={start}>Start typing <Keycap>Space</Keycap></button>}
+    {active && <button className="secondary game-start" disabled={paused || phase === 'armed'} onClick={() => finish('Run banked. Nicely done.')}>Finish run <Keycap>⌘ / Ctrl + Enter</Keycap></button>}
+    {result && <div className={`result ${result.received ? 'failure' : ''}`} role="status"><h2>{result.reason}</h2><div className="result-metrics"><span><strong>{result.correct}</strong> correct characters</span><span><strong>{result.words}</strong> completed words</span><span><strong>{result.wpm}</strong> WPM</span></div><p className="muted">{result.seconds}s played · {saved ? 'Best score saved on this device.' : 'Browser storage is unavailable; this result was not saved.'}</p><div className="button-row"><GameRoundControls game="typing" onRestart={start}/></div></div>}
+    <KeyboardLegend id="typing-shortcuts" shortcuts={result ? roundLegend : active ? [
+      { keys: ['⌘ / Ctrl', 'Enter'], label: 'Finish run' },
+    ] : [{ keys: ['Space'], label: 'Start typing' }]} note={phase === 'armed' ? 'Start typing to begin your run.' : undefined} />
   </section>;
 }

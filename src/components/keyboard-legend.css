@@ -1,0 +1,13 @@
+.keyboard-legend{display:flex;align-items:flex-start;flex-wrap:wrap;gap:12px 20px;margin-top:24px;padding:16px 18px;border:1px solid #494b46;border-radius:10px;background:#282a27;color:#e0e2db;font-size:13px;line-height:1.5}
+.keyboard-legend-title{display:inline-flex;align-items:center;gap:8px;min-height:27px;color:#eceee7;font-weight:600}
+.keyboard-legend ul{display:flex;flex:1;flex-wrap:wrap;align-items:center;gap:12px 22px;margin:0;padding:0;list-style:none}
+.keyboard-legend li,.keyboard-combo,.keyboard-combo-part{display:inline-flex;align-items:center;gap:7px}
+.keyboard-legend li{white-space:nowrap}
+.keyboard-combo,.keyboard-combo-part{gap:4px}
+.game-surface .keyboard-key{display:inline-flex;align-items:center;justify-content:center;min-width:26px;min-height:26px;padding:2px 7px;border:1px solid #707369;border-bottom-width:3px;border-radius:5px;background:#373a33;color:#f5f6f1;font-family:inherit;font-size:12px;font-weight:600;line-height:1.5;white-space:nowrap;box-shadow:0 1px 0 #171914}
+.game-surface :is(button,a)>.keyboard-key{margin-left:10px;border-color:currentColor;background:transparent;color:inherit;box-shadow:none}
+.keyboard-separator{color:#b4b9ae;font-size:12px}
+.keyboard-legend .keyboard-legend-note{flex-basis:100%;margin:0;color:#bfc4b8;font-size:12px}
+@media(max-width:600px){.keyboard-legend{gap:10px;padding:14px}.keyboard-legend-title{flex-basis:100%}.keyboard-legend ul{gap:12px 16px}.keyboard-legend li{font-size:12px}}
+
+.game-surface .button-row>[data-round-action]{display:inline-flex;align-items:center;justify-content:center;margin-top:0;text-decoration:none}

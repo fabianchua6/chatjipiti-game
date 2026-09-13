@@ -1,0 +1,20 @@
+.tibo-blessing {position:absolute;inset:0;z-index:9;overflow:hidden;pointer-events:none;isolation:isolate;container-type:inline-size;animation:blessing-finish 400ms 3900ms ease-out forwards}
+.blessing-light {position:absolute;inset:0;background:conic-gradient(from 154deg at 50% -8%,transparent 0deg,#ffdc7c33 13deg,#fff4cc80 26deg,#ffdc7c33 39deg,transparent 52deg);animation:blessing-light-open 700ms ease-out both}
+.blessing-arrival {position:absolute;top:1%;left:50%;width:36%;aspect-ratio:3/4;transform:translateX(-50%);animation:blessing-descent 1500ms cubic-bezier(.16,1,.3,1) both;mix-blend-mode:screen}
+.blessing-pope {width:100%;height:100%;background:url('/pope-tibo.png') right center/200% 100% no-repeat;image-rendering:pixelated;mask-image:linear-gradient(to right,transparent,#000 5%,#000 95%,transparent)}
+.blessing-proclamation {position:absolute;top:72%;left:5%;right:5%;display:grid;justify-items:center;gap:10px;font-family:'Press Start 2P',monospace;text-align:center;color:#fff1b1;text-shadow:0 3px 12px #000,0 2px 2px #000;animation:blessing-words 480ms 650ms ease-out both}
+.blessing-proclamation strong {font-size:clamp(16px,4cqw,30px);line-height:1.5}
+.blessing-proclamation>span {font-size:clamp(6px,1.7cqw,11px);line-height:1.7;letter-spacing:.035em}
+.blessing-token-rain {position:absolute;inset:0;overflow:hidden}
+.blessing-token {position:absolute;top:-48px;width:var(--token-size);height:var(--token-size);animation:blessing-token-fall var(--token-duration) var(--token-delay) cubic-bezier(.3,.2,.7,.8) both}
+.blessing-token>span {display:grid;place-items:center;width:100%;height:100%;padding:3px;border:1px solid #aefde0;border-radius:50%;background:#0d806b;color:#e5fff4;box-shadow:0 4px 10px #0005;animation:blessing-token-spin var(--token-duration) var(--token-delay) linear both}
+.blessing-token:nth-child(3n)>span {background:#c49934;border-color:#ffedac;color:#fff8df}
+.blessing-token svg {display:block;width:100%;height:100%}
+@keyframes blessing-finish {from{opacity:1}to{opacity:0}}
+@keyframes blessing-descent {from{transform:translate(-50%,-115%);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+@keyframes blessing-light-open {from{opacity:0}to{opacity:1}}
+@keyframes blessing-words {from{opacity:0;transform:translateY(12px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes blessing-token-fall {0%{transform:translate(0,-45px);opacity:0}8%{opacity:1}88%{opacity:1}100%{transform:translate(var(--token-drift),calc(70cqw + 90px));opacity:0}}
+@keyframes blessing-token-spin {from{transform:rotateY(0) rotate(0)}to{transform:rotateY(var(--token-spin)) rotate(100deg)}}
+@media(max-width:600px) {.blessing-arrival{width:34%}.blessing-proclamation{top:54%;gap:5px}.blessing-token:nth-child(n+29){display:none}}
+@media(prefers-reduced-motion:reduce) {.tibo-blessing{animation:blessing-finish 200ms 1200ms ease-out forwards}.blessing-arrival,.blessing-light,.blessing-proclamation{animation:none}.blessing-token-rain{display:none}}
